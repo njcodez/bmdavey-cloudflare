@@ -1,0 +1,52 @@
+"use client";
+
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Button } from "~/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+type PaginationControlsProps = {
+  currentPage: number;
+  totalPages: number;
+};
+
+export function PaginationControls({ currentPage, totalPages }: PaginationControlsProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.push(`${pathname}?${params.toString()}#products-section`, { scroll: true });
+  };
+
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-center gap-4 py-8 mt-auto">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </Button>
+      
+      <div className="text-sm font-medium">
+        Page {currentPage} of {totalPages}
+      </div>
+
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+      >
+        <ChevronRight className="w-4 h-4" />
+      </Button>
+    </div>
+  );
+}

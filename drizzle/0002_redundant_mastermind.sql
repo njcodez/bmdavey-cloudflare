@@ -1,0 +1,1 @@
+ALTER TABLE "bmdavey_product_variant" ADD COLUMN "color_label" varchar(128);
