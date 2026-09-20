@@ -1,0 +1,24 @@
+
+> bmdavey@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.25
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 15.4s
+   Linting and checking validity of types ...
+Failed to compile.
+
+./src/app/api/admin/backup/route.ts:93:27
+Type error: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BodyInit | null | undefined'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'URLSearchParams': size, append, delete, get, and 2 more.
+
+[0m [90m 91 |[39m   [36mconst[39m content [33m=[39m [36mawait[39m zip[33m.[39mgenerateAsync({ type[33m:[39m [32m"uint8array"[39m })[33m;[39m
+ [90m 92 |[39m
+[31m[1m>[22m[39m[90m 93 |[39m   [36mreturn[39m [36mnew[39m [33mNextResponse[39m(content[33m,[39m {
+ [90m    |[39m                           [31m[1m^[22m[39m
+ [90m 94 |[39m     headers[33m:[39m {
+ [90m 95 |[39m       [32m"Content-Type"[39m[33m:[39m [32m"application/zip"[39m[33m,[39m
+ [90m 96 |[39m       [32m"Content-Disposition"[39m[33m:[39m [32m`attachment; filename="bmdavey_backup_${dateStr}.zip"`[39m[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null

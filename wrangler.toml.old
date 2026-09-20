@@ -1,0 +1,10 @@
+name = "bmdavey-cloudflare"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+main = ".open-next/worker.js"
+assets = { directory = ".open-next/assets", binding = "ASSETS" }
+
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "0e7b105db35b405d8b684a30dd8f6a50"
+localConnectionString = "postgresql://postgres:9fAqQmShgpzUykmI@db.ksshztzqovhgpyudfefg.supabase.co:5432/postgres"

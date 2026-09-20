@@ -1,0 +1,1 @@
+ALTER TABLE "bmdavey_product" ADD COLUMN "brakes" varchar(64);
