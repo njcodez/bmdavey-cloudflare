@@ -74,13 +74,17 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
 
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(localParams.toString());
-    const current = params.get(key);
+    const currentValues = params.getAll(key);
     
-    // For single select behavior (if clicking the same, remove it)
-    if (current === value) {
+    // Check if the value is already selected
+    if (currentValues.includes(value)) {
+      // Remove it: we must delete the key completely, then re-append everything else
       params.delete(key);
+      const remaining = currentValues.filter((v) => v !== value);
+      remaining.forEach((v) => params.append(key, v));
     } else {
-      params.set(key, value);
+      // Add it
+      params.append(key, value);
     }
     
     // Reset to page 1 when filters change
@@ -164,7 +168,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                     <div key={cat} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`cat-${cat}`}
-                        checked={localParams.get("category") === cat}
+                        checked={localParams.getAll("category").includes(cat)}
                         onCheckedChange={() => handleFilterChange("category", cat)}
                       />
                       <Label htmlFor={`cat-${cat}`} className="cursor-pointer">{cat}</Label>
@@ -180,7 +184,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                     <div key={demo} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`demo-${demo}`}
-                        checked={localParams.get("targetDemographic") === demo}
+                        checked={localParams.getAll("targetDemographic").includes(demo)}
                         onCheckedChange={() => handleFilterChange("targetDemographic", demo)}
                       />
                       <Label htmlFor={`demo-${demo}`} className="cursor-pointer">{demo}</Label>
@@ -196,7 +200,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                     <div key={frame} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`frame-${frame}`}
-                        checked={localParams.get("frameMaterial") === frame}
+                        checked={localParams.getAll("frameMaterial").includes(frame)}
                         onCheckedChange={() => handleFilterChange("frameMaterial", frame)}
                       />
                       <Label htmlFor={`frame-${frame}`} className="cursor-pointer">{frame}</Label>
@@ -212,10 +216,12 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                     <div key={gear} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`gear-${gear}`}
-                        checked={localParams.get("gears") === gear.toString()}
+                        checked={localParams.getAll("gears").includes(gear.toString())}
                         onCheckedChange={() => handleFilterChange("gears", gear.toString())}
                       />
-                      <Label htmlFor={`gear-${gear}`} className="cursor-pointer">{gear} Speed</Label>
+                      <Label htmlFor={`gear-${gear}`} className="cursor-pointer">
+                        {gear === 1 ? "Single Speed" : `${gear} Speed`}
+                      </Label>
                     </div>
                   ))}
                 </div>
@@ -228,7 +234,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                     <div key={brake} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`brake-${brake}`}
-                        checked={localParams.get("brakes") === brake}
+                        checked={localParams.getAll("brakes").includes(brake)}
                         onCheckedChange={() => handleFilterChange("brakes", brake)}
                       />
                       <Label htmlFor={`brake-${brake}`} className="cursor-pointer">{brake}</Label>
@@ -244,7 +250,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                     <div key={size} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`wheel-${size}`}
-                        checked={localParams.get("wheelSize") === size}
+                        checked={localParams.getAll("wheelSize").includes(size)}
                         onCheckedChange={() => handleFilterChange("wheelSize", size)}
                       />
                       <Label htmlFor={`wheel-${size}`} className="cursor-pointer">{size}&quot;</Label>
@@ -260,7 +266,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                     <div key={gen} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`gen-${gen}`}
-                        checked={localParams.get("gender") === gen}
+                        checked={localParams.getAll("gender").includes(gen)}
                         onCheckedChange={() => handleFilterChange("gender", gen)}
                       />
                       <Label htmlFor={`gen-${gen}`} className="cursor-pointer">{gen}</Label>
@@ -275,7 +281,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                   <div key={age.value} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`age-${age.value}`}
-                      checked={localParams.get("ageRange") === age.value}
+                      checked={localParams.getAll("ageRange").includes(age.value)}
                       onCheckedChange={() => handleFilterChange("ageRange", age.value)}
                     />
                     <Label htmlFor={`age-${age.value}`} className="cursor-pointer">{age.label}</Label>
@@ -289,7 +295,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                   <div key={hr.value} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`hr-${hr.value}`}
-                      checked={localParams.get("heightRange") === hr.value}
+                      checked={localParams.getAll("heightRange").includes(hr.value)}
                       onCheckedChange={() => handleFilterChange("heightRange", hr.value)}
                     />
                     <Label htmlFor={`hr-${hr.value}`} className="cursor-pointer">{hr.label}</Label>
@@ -303,7 +309,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
                   <div key={avail.value} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`avail-${avail.value}`}
-                      checked={localParams.get("availability") === avail.value}
+                      checked={localParams.getAll("availability").includes(avail.value)}
                       onCheckedChange={() => handleFilterChange("availability", avail.value)}
                     />
                     <Label htmlFor={`avail-${avail.value}`} className="cursor-pointer">{avail.label}</Label>

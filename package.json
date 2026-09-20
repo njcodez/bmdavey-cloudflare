@@ -19,7 +19,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "build:cf": "npx @cloudflare/next-on-pages",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy": "npx --yes dotenv-cli -e .env -- opennextjs-cloudflare build && npx --yes dotenv-cli -e .env -- opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },

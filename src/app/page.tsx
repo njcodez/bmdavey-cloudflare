@@ -12,25 +12,30 @@ import { Suspense } from "react";
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<Record<string, string | undefined>>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const resolvedSearchParams = await searchParams;
-  const page = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page) : 1;
-  const search = resolvedSearchParams.search ?? "";
+  
+  const getSingleString = (val: string | string[] | undefined) => Array.isArray(val) ? val[0] : val;
+  
+  const pageParam = getSingleString(resolvedSearchParams.page);
+  const page = pageParam ? parseInt(pageParam) : 1;
+  const search = getSingleString(resolvedSearchParams.search) ?? "";
+  
+  const heightInchesParam = getSingleString(resolvedSearchParams.heightInches);
+  const heightInches = heightInchesParam ? parseInt(heightInchesParam) : undefined;
+  
+  const minPriceParam = getSingleString(resolvedSearchParams.minPrice);
+  const minPrice = minPriceParam ? parseInt(minPriceParam) : undefined;
+  
+  const maxPriceParam = getSingleString(resolvedSearchParams.maxPrice);
+  const maxPrice = maxPriceParam ? parseInt(maxPriceParam) : undefined;
+
   const category = resolvedSearchParams.category;
   const targetDemographic = resolvedSearchParams.targetDemographic;
   const frameMaterial = resolvedSearchParams.frameMaterial;
   const gears = resolvedSearchParams.gears;
   const gender = resolvedSearchParams.gender;
-  const heightInches = resolvedSearchParams.heightInches
-    ? parseInt(resolvedSearchParams.heightInches)
-    : undefined;
-  const minPrice = resolvedSearchParams.minPrice
-    ? parseInt(resolvedSearchParams.minPrice)
-    : undefined;
-  const maxPrice = resolvedSearchParams.maxPrice
-    ? parseInt(resolvedSearchParams.maxPrice)
-    : undefined;
   const heightRange = resolvedSearchParams.heightRange;
   const brakes = resolvedSearchParams.brakes;
   const wheelSize = resolvedSearchParams.wheelSize;
