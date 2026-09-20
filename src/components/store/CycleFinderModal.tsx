@@ -8,8 +8,6 @@ import { X, ChevronRight, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import { cn } from "~/lib/utils";
 
-const TOTAL_STEPS = 5;
-
 type CycleFinderModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -17,10 +15,9 @@ type CycleFinderModalProps = {
 
 type Answers = {
   who: string | null;         // Q1
-  height: string | null;      // Q2
+  age: string | null;         // Q2
   terrain: string | null;     // Q3
-  gears: string | null;       // Q4
-  budget: string | null;      // Q5
+  gears: string[];            // Q4
 };
 
 export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
@@ -30,16 +27,16 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({
     who: null,
-    height: null,
+    age: null,
     terrain: null,
-    gears: null,
-    budget: null,
+    gears: [],
   });
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const progress = ((step + 1) / TOTAL_STEPS) * 100;
+  const totalSteps = answers.who === "kiddo" ? 2 : 4;
+  const progress = ((step + 1) / totalSteps) * 100;
 
   // Push filter params to URL so the background grid updates in real-time
   const pushFilters = useCallback(
@@ -52,9 +49,7 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
       params.delete("gender");
       params.delete("category");
       params.delete("gears");
-      params.delete("heightInches");
-      params.delete("minPrice");
-      params.delete("maxPrice");
+      params.delete("ageRange");
       params.set("page", "1");
 
       // Q1: Who
@@ -62,44 +57,32 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
         params.set("targetDemographic", "Kids");
       } else if (merged.who === "myself_m") {
         params.set("targetDemographic", "Adults");
-        params.set("gender", "Male");
+        params.append("gender", "Male");
+        params.append("gender", "Unisex");
       } else if (merged.who === "myself_f") {
         params.set("targetDemographic", "Adults");
-        params.set("gender", "Female");
+        params.append("gender", "Female");
+        params.append("gender", "Unisex");
       } else if (merged.who === "anyone") {
         params.set("targetDemographic", "Adults");
       }
 
-      // Q2: Height
-      if (merged.height) {
-        params.set("heightRange", merged.height);
+      // Q2: Age
+      if (merged.age) {
+        params.set("ageRange", merged.age);
       }
 
       // Q3: Terrain
-      if (merged.terrain === "dirt") params.set("category", "Mountain (MTB)");
-      else if (merged.terrain === "city") params.set("category", "Mountain (MTB)");
-      else if (merged.terrain === "mix") params.set("category", "Hybrid");
-      else if (merged.terrain === "fast") params.set("category", "Mountain(MTB)");
+      if (merged.terrain === "multi") params.set("category", "Mountain (MTB)");
+      else if (merged.terrain === "paved") params.set("category", "Hybrid");
 
-      // Q4: Gears
-      if (merged.gears === "simple") params.set("gears", "1");
-      else if (merged.gears === "few") params.set("gears", "7");
-      else if (merged.gears === "all") params.set("gears", "21");
-      else if (merged.gears === "electric") {
-        params.set("category", "Hybrid"); // Override terrain to Hybrid
-      }
-
-      // Q5: Budget
-      if (merged.budget === "under500") {
-        params.set("maxPrice", "5000");
-      } else if (merged.budget === "5000to10000") {
-        params.set("minPrice", "5000");
-        params.set("maxPrice", "10000");
-      } else if (merged.budget === "10000to20000") {
-        params.set("minPrice", "10000");
-        params.set("maxPrice", "20000");
-      } else if (merged.budget === "over20000") {
-        params.set("minPrice", "20000");
+      // Q4: Gears (Multiple)
+      if (merged.gears && merged.gears.length > 0) {
+        merged.gears.forEach(g => {
+          if (g === "simple") params.append("gears", "1");
+          else if (g === "few") params.append("gears", "7");
+          else if (g === "all") params.append("gears", "21");
+        });
       }
 
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -113,8 +96,17 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
     pushFilters({ [key]: value });
   };
 
+  const toggleGear = (value: string) => {
+    const current = [...answers.gears];
+    if (current.includes(value)) {
+      selectAnswer("gears", current.filter((g) => g !== value));
+    } else {
+      selectAnswer("gears", [...current, value]);
+    }
+  };
+
   const handleNext = () => {
-    if (step < TOTAL_STEPS - 1) setStep(step + 1);
+    if (step < totalSteps - 1) setStep(step + 1);
     else handleClose();
   };
 
@@ -150,7 +142,7 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative w-full md:max-w-lg bg-white text-black rounded-t-3xl md:rounded-2xl shadow-2xl overflow-hidden max-h-[90dvh] md:max-h-[85vh]"
+            className="relative w-full md:max-w-lg bg-white text-black rounded-3xl md:rounded-2xl shadow-2xl overflow-hidden max-h-[85dvh] md:max-h-[85vh] scale-[0.85] md:scale-100 origin-bottom md:origin-center mb-12 md:mb-0"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Progress Road Line */}
@@ -174,7 +166,7 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
               </motion.div>
               {/* Step indicator */}
               <div className="absolute top-4 right-6 text-sm font-bold text-muted-foreground tracking-widest bg-white/80 px-2 py-1 rounded-md shadow-sm">
-                {step + 1} / {TOTAL_STEPS}
+                {step + 1} / {totalSteps}
               </div>
               {/* Close */}
               <button
@@ -228,29 +220,41 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
                     transition={{ duration: 0.2 }}
                     className="space-y-4"
                   >
-                    <h3 className="text-2xl font-bold">How tall is the rider?</h3>
-                    <p className="text-sm text-black/60">Select the height range for accurate frame sizing.</p>
+                    <h3 className="text-2xl font-bold">What is the rider&apos;s age?</h3>
+                    <p className="text-sm text-black/60">Select the age range for accurate frame sizing.</p>
                     <div className="grid gap-4 mt-6">
-                      {[
-                        { value: "48-60", label: "4'0\" to 5'0\"", desc: "Great for teens and smaller adults" },
-                        { value: "60-66", label: "5'0\" to 5'6\"", desc: "Average height for many riders" },
-                        { value: "66-72", label: "5'6\" to 6'0\"", desc: "Most standard adult sizes" },
-                        { value: "72-100", label: "6'0\" and above", desc: "For taller riders" },
-                      ].map((opt) => (
-                        <button
-                          key={opt.value}
-                          onClick={() => { selectAnswer("height", opt.value); handleNext(); }}
-                          className={optionBtn(answers.height === opt.value)}
-                        >
-                          <div className="text-base font-bold text-left w-full">{opt.label}</div>
-                          <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">{opt.desc}</div>
-                        </button>
-                      ))}
+                      {answers.who === "kiddo" ? (
+                        <>
+                          <button onClick={() => { selectAnswer("age", "2-5"); handleNext(); }} className={optionBtn(answers.age === "2-5")}>
+                            <div className="text-base font-bold text-left w-full">2-5 years</div>
+                            <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">Perfect for toddlers</div>
+                          </button>
+                          <button onClick={() => { selectAnswer("age", "5-8"); handleNext(); }} className={optionBtn(answers.age === "5-8")}>
+                            <div className="text-base font-bold text-left w-full">5-8 years</div>
+                            <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">Growing kids</div>
+                          </button>
+                          <button onClick={() => { selectAnswer("age", "8-12"); handleNext(); }} className={optionBtn(answers.age === "8-12")}>
+                            <div className="text-base font-bold text-left w-full">8-12 years</div>
+                            <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">Pre-teens</div>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button onClick={() => { selectAnswer("age", "13-17"); handleNext(); }} className={optionBtn(answers.age === "13-17")}>
+                            <div className="text-base font-bold text-left w-full">13-17 years</div>
+                            <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">Teenagers</div>
+                          </button>
+                          <button onClick={() => { selectAnswer("age", "18-20"); handleNext(); }} className={optionBtn(answers.age === "18-20")}>
+                            <div className="text-base font-bold text-left w-full">18+ years</div>
+                            <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">Adults</div>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </motion.div>
                 )}
 
-                {step === 2 && (
+                {step === 2 && answers.who !== "kiddo" && (
                   <motion.div
                     key="q3"
                     initial={{ opacity: 0, x: 30 }}
@@ -263,10 +267,8 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
                     <p className="text-sm text-black/60">Select the primary terrain for your rides.</p>
                     <div className="grid gap-4 mt-6">
                       {[
-                        { value: "dirt", label: "Dirt & Trails", desc: "Mountain biking and off-road" },
-                        { value: "city", label: "City Streets", desc: "Commuting and urban rides" },
-                        { value: "mix", label: "Mixed Terrain", desc: "Roads, paths, and light trails" },
-                        { value: "fast", label: "Paved Roads", desc: "Road cycling and high speed" },
+                        { value: "multi", label: "Multi Terrain", desc: "Mountain biking and off-road" },
+                        { value: "paved", label: "Paved Road", desc: "City streets and commuting" },
                       ].map((opt) => (
                         <button
                           key={opt.value}
@@ -281,7 +283,7 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
                   </motion.div>
                 )}
 
-                {step === 3 && (
+                {step === 3 && answers.who !== "kiddo" && (
                   <motion.div
                     key="q4"
                     initial={{ opacity: 0, x: 30 }}
@@ -291,49 +293,17 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
                     className="space-y-4"
                   >
                     <h3 className="text-2xl font-bold">How many gears do you need?</h3>
-                    <p className="text-sm text-black/60">More gears provide versatility on steep hills.</p>
+                    <p className="text-sm text-black/60">Select all that apply.</p>
                     <div className="grid gap-4 mt-6">
                       {[
                         { value: "simple", label: "Single Speed", desc: "Keep it simple and easy to maintain" },
                         { value: "few", label: "7 Speeds", desc: "A few options, great for city riding" },
                         { value: "all", label: "21+ Speeds", desc: "Maximum options for steep climbs" },
-                        { value: "electric", label: "Electric Assist", desc: "E-bike with motorized boost" },
                       ].map((opt) => (
                         <button
                           key={opt.value}
-                          onClick={() => { selectAnswer("gears", opt.value); handleNext(); }}
-                          className={optionBtn(answers.gears === opt.value)}
-                        >
-                          <div className="text-base font-bold text-left w-full">{opt.label}</div>
-                          <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">{opt.desc}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-
-                {step === 4 && (
-                  <motion.div
-                    key="q5"
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -30 }}
-                    transition={{ duration: 0.2 }}
-                    className="space-y-4"
-                  >
-                    <h3 className="text-2xl font-bold">What is your budget?</h3>
-                    <p className="text-sm text-black/60">We will find the best value within your range.</p>
-                    <div className="grid gap-4 mt-6">
-                      {[
-                        { value: "under500", label: "Under ₹5000", desc: "Great entry-level options" },
-                        { value: "500to1000", label: "₹5,000 – ₹10,000", desc: "Mid-range quality" },
-                        { value: "1000to2000", label: "₹10,000 – ₹20,000", desc: "Premium performance" },
-                        { value: "over2000", label: "₹20,000+", desc: "Top-tier builds" },
-                      ].map((opt) => (
-                        <button
-                          key={opt.value}
-                          onClick={() => { selectAnswer("budget", opt.value); }}
-                          className={optionBtn(answers.budget === opt.value)}
+                          onClick={() => toggleGear(opt.value)}
+                          className={optionBtn(answers.gears.includes(opt.value))}
                         >
                           <div className="text-base font-bold text-left w-full">{opt.label}</div>
                           <div className="text-xs text-black/60 mt-0.5 text-left w-full font-medium">{opt.desc}</div>
@@ -358,7 +328,7 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
                 onClick={handleNext}
                 className="btn-cred gap-1 h-10 px-4 bg-white text-black shrink-0"
               >
-                {step === TOTAL_STEPS - 1 ? "See Results" : "Next"}
+                {step === totalSteps - 1 ? "See Results" : "Next"}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>

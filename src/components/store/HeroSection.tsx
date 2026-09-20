@@ -14,7 +14,7 @@ export function HeroSection() {
   const [isCycleFinderOpen, setIsCycleFinderOpen] = useState(false);
 
   return (
-    <section className="relative min-h-dvh flex items-center justify-center overflow-hidden bg-black text-white">
+    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-black text-white">
       {/* Animated Background - Pure CSS for scroll performance */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-[#008FEF]/20" />

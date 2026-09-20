@@ -2,25 +2,25 @@
 
 import { db } from "~/server/db";
 import { products, productVariants } from "~/server/db/schema";
-import { eq, ilike, or, and, sql, asc, desc, gte, lte, inArray, notInArray } from "drizzle-orm";
+import { eq, ilike, or, and, sql, asc, desc, gte, lte, inArray, notInArray, type SQL } from "drizzle-orm";
 
 type StorefrontProductsParams = {
   page?: number;
   limit?: number;
   search?: string;
-  category?: string;
-  targetDemographic?: string;
-  frameMaterial?: string;
-  gears?: string;
+  category?: string | string[];
+  targetDemographic?: string | string[];
+  frameMaterial?: string | string[];
+  gears?: string | string[];
   heightInches?: number;
-  heightRange?: string;
+  heightRange?: string | string[];
   minPrice?: number;
   maxPrice?: number;
-  gender?: string;
-  brakes?: string;
-  wheelSize?: string;
-  availability?: string;
-  ageRange?: string;
+  gender?: string | string[];
+  brakes?: string | string[];
+  wheelSize?: string | string[];
+  availability?: string | string[];
+  ageRange?: string | string[];
 };
 
 export async function getStorefrontProducts({
@@ -70,82 +70,117 @@ export async function getStorefrontProducts({
     searchWhere = or(...searchConditions);
     conditions.push(searchWhere);
   }
-  if (category) conditions.push(eq(products.category, category));
-  if (targetDemographic) conditions.push(eq(products.target_demographic, targetDemographic));
-  if (frameMaterial) conditions.push(eq(products.frame_material, frameMaterial));
-  if (gender) conditions.push(eq(products.gender, gender));
-  if (brakes) conditions.push(eq(products.brakes, brakes));
-  if (wheelSize) conditions.push(ilike(products.wheel_size_t, `%${wheelSize}%`));
-  if (ageRange) {
-    const [filterMinStr, filterMaxStr] = ageRange.split("-");
-    const filterMin = parseInt(filterMinStr ?? "");
-    if (!isNaN(filterMin)) {
+
+  const toArray = (val: string | string[] | undefined): string[] => {
+    if (!val) return [];
+    return Array.isArray(val) ? val : [val];
+  };
+
+  const categories = toArray(category);
+  if (categories.length > 0) conditions.push(inArray(products.category, categories));
+
+  const demographics = toArray(targetDemographic);
+  if (demographics.length > 0) conditions.push(inArray(products.target_demographic, demographics));
+
+  const frames = toArray(frameMaterial);
+  if (frames.length > 0) conditions.push(inArray(products.frame_material, frames));
+
+  const genders = toArray(gender);
+  if (genders.length > 0) conditions.push(inArray(products.gender, genders));
+
+  const brakeList = toArray(brakes);
+  if (brakeList.length > 0) conditions.push(inArray(products.brakes, brakeList));
+
+  const wheels = toArray(wheelSize);
+  if (wheels.length > 0) {
+    const wheelConditions = wheels.map(w => ilike(products.wheel_size_t, `%${w}%`));
+    conditions.push(or(...wheelConditions)!);
+  }
+
+  const ageRangesList = toArray(ageRange);
+  if (ageRangesList.length > 0) {
+    const ageConditions = ageRangesList.map(ar => {
+      const [filterMinStr, filterMaxStr] = ar.split("-");
+      const filterMin = parseInt(filterMinStr ?? "");
+      if (isNaN(filterMin)) return undefined;
       const filterMax = parseInt(filterMaxStr ?? "");
       const fMax = isNaN(filterMax) ? 20 : filterMax;
+      return sql`
+        CASE 
+          WHEN ${products.age_range} ~ '^[0-9]+-[0-9]+$' THEN
+            CAST(SPLIT_PART(${products.age_range}, '-', 1) AS INTEGER) <= ${fMax} AND CAST(SPLIT_PART(${products.age_range}, '-', 2) AS INTEGER) >= ${filterMin}
+          ELSE FALSE
+        END
+      `;
+    }).filter(Boolean) as SQL[];
+    if (ageConditions.length > 0) {
+      conditions.push(or(...ageConditions)!);
+    }
+  }
+
+  const availabilities = toArray(availability);
+  if (availabilities.length > 0) {
+    if (availabilities.includes("in_stock") && !availabilities.includes("out_of_stock")) {
       conditions.push(
-        sql`
-          CASE 
-            WHEN ${products.age_range} ~ '^[0-9]+-[0-9]+$' THEN
-              CAST(SPLIT_PART(${products.age_range}, '-', 1) AS INTEGER) <= ${fMax} AND CAST(SPLIT_PART(${products.age_range}, '-', 2) AS INTEGER) >= ${filterMin}
-            ELSE FALSE
-          END
-        `
+        inArray(
+          products.id,
+          db.select({ id: productVariants.product_id })
+            .from(productVariants)
+            .where(eq(productVariants.in_stock, true))
+        )
       );
-    }
-  }
-  
-  if (availability === "in_stock") {
-    conditions.push(
-      inArray(
-        products.id,
-        db.select({ id: productVariants.product_id })
-          .from(productVariants)
-          .where(eq(productVariants.in_stock, true))
-      )
-    );
-  } else if (availability === "out_of_stock") {
-    conditions.push(
-      notInArray(
-        products.id,
-        db.select({ id: productVariants.product_id })
-          .from(productVariants)
-          .where(eq(productVariants.in_stock, true))
-      )
-    );
-  }
-
-  // Gears filter: "1" = single, "7" = 7-speed, "21" = 21+
-  if (gears) {
-    const gearsNum = parseInt(gears);
-    if (gearsNum >= 21) {
-      conditions.push(gte(products.gears, 21));
-    } else {
-      conditions.push(eq(products.gears, gearsNum));
-    }
-  }
-
-  // Height filter (legacy explicit height check)
-  if (heightInches) {
-    conditions.push(lte(products.height_min_inches, heightInches));
-    conditions.push(gte(products.height_max_inches, heightInches));
-  }
-  
-  // Height range overlap filter (e.g. "30-48", "72-100")
-  if (heightRange) {
-    const [minStr, maxStr] = heightRange.split("-");
-    const minRange = parseInt(minStr ?? "");
-    const maxRange = parseInt(maxStr ?? "");
-    if (!isNaN(minRange) && !isNaN(maxRange)) {
+    } else if (availabilities.includes("out_of_stock") && !availabilities.includes("in_stock")) {
       conditions.push(
-        and(
-          lte(products.height_min_inches, maxRange),
-          gte(products.height_max_inches, minRange)
+        notInArray(
+          products.id,
+          db.select({ id: productVariants.product_id })
+            .from(productVariants)
+            .where(eq(productVariants.in_stock, true))
         )
       );
     }
   }
 
-  // Price range filter
+  const gearsList = toArray(gears);
+  if (gearsList.length > 0) {
+    const gearsConditions = gearsList.map(g => {
+      const gearsNum = parseInt(g);
+      if (isNaN(gearsNum)) return undefined;
+      if (gearsNum >= 21) {
+        return gte(products.gears, 21);
+      } else {
+        return eq(products.gears, gearsNum);
+      }
+    }).filter(Boolean) as SQL[];
+    if (gearsConditions.length > 0) {
+      conditions.push(or(...gearsConditions)!);
+    }
+  }
+
+  if (heightInches) {
+    conditions.push(lte(products.height_min_inches, heightInches));
+    conditions.push(gte(products.height_max_inches, heightInches));
+  }
+
+  const heightsList = toArray(heightRange);
+  if (heightsList.length > 0) {
+    const heightConditions = heightsList.map(hr => {
+      const [minStr, maxStr] = hr.split("-");
+      const minRange = parseInt(minStr ?? "");
+      const maxRange = parseInt(maxStr ?? "");
+      if (!isNaN(minRange) && !isNaN(maxRange)) {
+        return and(
+          lte(products.height_min_inches, maxRange),
+          gte(products.height_max_inches, minRange)
+        );
+      }
+      return undefined;
+    }).filter(Boolean) as SQL[];
+    if (heightConditions.length > 0) {
+      conditions.push(or(...heightConditions)!);
+    }
+  }
+
   if (minPrice) conditions.push(gte(sql`${products.base_price}::numeric`, minPrice));
   if (maxPrice) conditions.push(lte(sql`${products.base_price}::numeric`, maxPrice));
 

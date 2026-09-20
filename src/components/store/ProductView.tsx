@@ -299,6 +299,9 @@ export function ProductView({ product }: ProductViewProps) {
             <p className="text-xs text-center text-muted-foreground mt-3">
               Lock in this price for 48 hours. No upfront payment required.
             </p>
+            <Link href="/experience-offline" className="text-sm font-medium text-primary hover:underline text-center block mt-3">
+              Why &quot;reserve now&quot; instead of buying online? Click here to know why!
+            </Link>
           </div>
 
           {/* Technical Specs */}

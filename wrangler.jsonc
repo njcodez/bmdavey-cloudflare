@@ -7,6 +7,11 @@
 		"nodejs_compat",
 		"global_fetch_strictly_public"
 	],
+	"vars": {
+		"NEXT_PUBLIC_SUPABASE_URL": "https://ksshztzqovhgpyudfefg.supabase.co",
+		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzc2h6dHpxb3ZoZ3B5dWRmZWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1Njc4NjksImV4cCI6MjEwNTE0Mzg2OX0.Pc0ixgk7XDFwQpfKQjrpJvZ6gQeBvf_NzhBUES9qY7Q",
+		"DATABASE_URL": "postgresql://postgres.ksshztzqovhgpyudfefg:vK5weZKZGnvpZBFw@aws-0-ap-south-1.pooler.supabase.com:6543/postgres"
+	},
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
@@ -23,12 +28,5 @@
 		// Enable image optimization
 		// see https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
-	},
-	"hyperdrive": [
-		{
-			"binding": "HYPERDRIVE",
-			"id": "e2da1cb5f3b743058cd4cdcddebc7709",
-			"localConnectionString": "postgresql://postgres:9fAqQmShgpzUykmI@db.ksshztzqovhgpyudfefg.supabase.co:5432/postgres"
-		}
-	]
+	}
 }
