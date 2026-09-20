@@ -12,6 +12,8 @@ import {
 import Link from "next/link";
 import { Mail, MessageCircle, MessageSquare } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCouponsPage() {
   const data = await getCoupons();
 
