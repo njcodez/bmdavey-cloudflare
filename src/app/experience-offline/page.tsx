@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export const metadata = {
-  title: "Experience Offline | B M Davey & Co",
+  title: "Experience Offline | B. M. Davey & Co.",
   description: "Why visiting our store is the best way to buy a bicycle.",
 };
 
@@ -19,7 +19,7 @@ export default function ExperienceOfflinePage() {
           Some things are meant to be felt before buying.
         </h1>
         <p className="text-xl text-muted-foreground leading-relaxed mt-4">
-          At B M Davey & Co, we&apos;ve believed for over 90 years that buying a bicycle is a deeply personal experience. Here is why visiting our Chennai showroom offline ensures you get the perfect ride.
+          At B. M. Davey & Co., we&apos;ve believed for over 90 years that buying a bicycle is a deeply personal experience. Here is why visiting our Chennai showroom offline ensures you get the perfect ride.
         </p>
       </div>
 

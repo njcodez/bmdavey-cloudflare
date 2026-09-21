@@ -2,15 +2,12 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { useState, Suspense } from "react";
 import { CycleFinderModal } from "./CycleFinderModal";
 
 export function HeroSection() {
-  const scrollToProducts = () => {
-    document.getElementById("products-section")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   const [isCycleFinderOpen, setIsCycleFinderOpen] = useState(false);
 
   return (
@@ -60,12 +57,12 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mt-6 md:mt-10 flex flex-col sm:flex-row gap-3 w-full sm:w-auto mb-4 md:mb-0"
           >
-            <button
-              onClick={scrollToProducts}
-              className="btn-cred-white text-sm md:text-lg px-4 md:px-8 py-3 md:py-4 rounded-xl font-bold bg-[#008FEF] text-black w-full sm:w-auto"
+            <Link
+              href="/#products-section"
+              className="btn-cred-white text-sm md:text-lg px-4 md:px-8 py-3 md:py-4 rounded-xl font-bold bg-[#008FEF] text-black w-full sm:w-auto text-center"
             >
               Browse Collection
-            </button>
+            </Link>
             <button
               onClick={() => setIsCycleFinderOpen(true)}
               className="btn-cred-white text-sm md:text-lg px-4 md:px-8 py-3 md:py-4 rounded-xl font-bold bg-black text-white w-full sm:w-auto"
@@ -110,13 +107,13 @@ export function HeroSection() {
       </div>
 
       {/* Scroll indicator */}
-      <button
-        onClick={scrollToProducts}
+      <Link
+        href="/#products-section"
         className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-1 text-white/50 hover:text-white/60 transition-colors cursor-pointer animate-bounce-slow"
       >
         <span className="text-xs uppercase tracking-widest">Scroll</span>
         <ChevronDown className="w-5 h-5" />
-      </button>
+      </Link>
       
       <style jsx>{`
         .animate-bounce-slow {

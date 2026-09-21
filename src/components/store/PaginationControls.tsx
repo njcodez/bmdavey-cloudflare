@@ -19,7 +19,12 @@ export function PaginationControls({ currentPage, totalPages }: PaginationContro
     
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage.toString());
-    router.push(`${pathname}?${params.toString()}#products-section`, { scroll: true });
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    
+    // Slight delay to ensure route changes before smooth scrolling
+    setTimeout(() => {
+      document.getElementById("products-section")?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
   };
 
   if (totalPages <= 1) return null;

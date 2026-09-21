@@ -23,6 +23,10 @@ export function ProductView({ product }: ProductViewProps) {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [direction, setDirection] = useState(0);
 
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomOrigin, setZoomOrigin] = useState("50% 50%");
+
   const paginate = (newDirection: number) => {
     setDirection(newDirection);
     setActiveImageIdx((prev) => {
@@ -80,7 +84,7 @@ export function ProductView({ product }: ProductViewProps) {
   return (
     <div className="container mx-auto px-4 md:px-6 pt-32 pb-16">
       <Link
-        href="/"
+        href="/#products-section"
         className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >
         <ChevronLeft className="w-4 h-4 mr-1" />
@@ -135,8 +139,18 @@ export function ProductView({ product }: ProductViewProps) {
                         paginate(-1);
                       }
                     }}
+                    onClick={() => {
+                      if (window.innerWidth >= 768) {
+                        setIsFullscreen(true);
+                        setZoomScale(1);
+                      }
+                    }}
                   />
                 </AnimatePresence>
+
+                <div className="absolute bottom-4 right-4 hidden md:block bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg border border-white/10 font-medium z-20">
+                  Click image to enlarge
+                </div>
                 
                 {/* Arrows */}
                 {images.length > 1 && (
@@ -200,12 +214,12 @@ export function ProductView({ product }: ProductViewProps) {
             </h1>
             <div className="flex items-center gap-3 mt-2">
               <span className="text-2xl md:text-3xl font-black text-primary">
-                ₹{product.base_price}
+                ₹{Math.round(parseFloat(product.base_price))}
               </span>
               {discountPercent > 0 && (
                 <>
                   <span className="text-base md:text-lg text-muted-foreground line-through">
-                    ₹{product.mrp}
+                    ₹{Math.round(parseFloat(product.mrp))}
                   </span>
                   <Badge className="bg-primary text-primary-foreground">
                     {discountPercent}% OFF
@@ -217,41 +231,54 @@ export function ProductView({ product }: ProductViewProps) {
 
           <div className="h-px bg-border" />
 
-          {/* Color Swatches */}
-          {variants.length > 0 && (
-            <div className="flex flex-col gap-3">
-              <span className="font-semibold text-sm">
-                Color:{" "}
-                <span className="text-muted-foreground font-normal">
-                  {selectedVariant?.color_label ?? selectedVariant?.color_name}
+          <div className="flex flex-col gap-4">
+            {product.age_range && (
+              <div className="flex items-center gap-2 text-sm md:text-base">
+                <span className="font-bold text-[#008FEF]">Suitable for: </span>
+                <span className="font-semibold text-foreground">
+                  {product.age_range === '18-20' ? '18+ years' : `${product.age_range} years`}
                 </span>
-              </span>
-              <div className="flex flex-wrap gap-3">
-                {variants.map((variant) => {
-                  const isSelected = selectedVariantId === variant.id;
-                  return (
-                    <button
-                      key={variant.id}
-                      onClick={() => setSelectedVariantId(variant.id)}
-                      className={cn(
-                        "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center shadow-sm",
-                        isSelected
-                          ? "border-primary ring-2 ring-primary/20 scale-110"
-                          : "border-transparent hover:scale-105 opacity-80 hover:opacity-100"
-                      )}
-                      style={{ backgroundColor: variant.color_hex }}
-                      title={variant.color_label ?? variant.color_name}
-                      aria-label={`Select ${variant.color_label ?? variant.color_name}`}
-                    >
-                      {isSelected && (
-                        <Check className="w-5 h-5 text-white drop-shadow-md mix-blend-difference" />
-                      )}
-                    </button>
-                  );
-                })}
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Color Swatches */}
+            {variants.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <span className="font-semibold text-sm">
+                  Color:{" "}
+                  <span className="text-muted-foreground font-normal">
+                    {selectedVariant?.color_label ?? selectedVariant?.color_name}
+                  </span>
+                </span>
+                <div className="flex flex-wrap gap-3">
+                  {variants.map((variant) => {
+                    const isSelected = selectedVariantId === variant.id;
+                    return (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedVariantId(variant.id)}
+                        className={cn(
+                          "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center shadow-sm",
+                          isSelected
+                            ? "border-primary ring-2 ring-primary/20 scale-110"
+                            : "border-transparent hover:scale-105 opacity-80 hover:opacity-100"
+                        )}
+                        style={{ backgroundColor: variant.color_hex }}
+                        title={variant.color_label ?? variant.color_name}
+                        aria-label={`Select ${variant.color_label ?? variant.color_name}`}
+                      >
+                        {isSelected && (
+                          <Check className="w-5 h-5 text-white drop-shadow-md mix-blend-difference" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+
 
           {/* Key Features */}
           {filledFeatures.length > 0 && (
@@ -299,7 +326,7 @@ export function ProductView({ product }: ProductViewProps) {
             <p className="text-xs text-center text-muted-foreground mt-3">
               Lock in this price for 48 hours. No upfront payment required.
             </p>
-            <Link href="/experience-offline" className="text-sm font-medium text-primary hover:underline text-center block mt-3">
+            <Link href="/experience-offline" className="text-sm md:text-base font-bold text-primary hover:underline text-center block mt-3 bg-primary/10 py-3 px-4 rounded-xl shadow-sm border border-primary/20">
               Why &quot;reserve now&quot; instead of buying online? Click here to know why!
             </Link>
           </div>
@@ -392,6 +419,67 @@ export function ProductView({ product }: ProductViewProps) {
           variantColor={selectedVariant.color_label ?? selectedVariant.color_name}
         />
       )}
+
+      {/* Fullscreen Image Modal (Desktop Only) */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center cursor-zoom-out backdrop-blur-sm"
+            onClick={() => {
+              setIsFullscreen(false);
+              setZoomScale(1);
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              setZoomScale(1);
+            }}
+          >
+            <motion.img
+              src={images[activeImageIdx]}
+              alt={`${product.name} enlarged`}
+              className="max-w-[95vw] max-h-[95vh] object-contain transition-transform duration-300 ease-out"
+              style={{
+                transform: `scale(${zoomScale})`,
+                transformOrigin: zoomOrigin,
+                cursor: zoomScale === 1 ? 'zoom-in' : 'zoom-out'
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (zoomScale === 1) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setZoomOrigin(`${x}% ${y}%`);
+                  setZoomScale(2.5);
+                } else {
+                  setZoomScale(1);
+                }
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setZoomScale(1);
+              }}
+            />
+            <div className="absolute top-6 right-6 text-white/70 text-sm font-medium bg-black/50 px-4 py-2 rounded-xl backdrop-blur-md border border-white/10 shadow-lg pointer-events-none">
+              Left click to zoom • Right click to reset
+            </div>
+            
+            <button 
+              className="absolute top-6 left-6 text-white bg-black/50 p-2 rounded-full hover:bg-black/80 transition-colors border border-white/10 backdrop-blur-md"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsFullscreen(false);
+              }}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

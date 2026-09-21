@@ -142,11 +142,11 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="relative w-full md:max-w-lg bg-white text-black rounded-3xl md:rounded-2xl shadow-2xl overflow-hidden max-h-[85dvh] md:max-h-[85vh] scale-[0.85] md:scale-100 origin-bottom md:origin-center mb-12 md:mb-0"
+            className="relative w-full md:max-w-lg bg-white text-black rounded-3xl md:rounded-2xl shadow-2xl overflow-hidden max-h-[85dvh] md:max-h-[85vh] scale-[0.85] md:scale-100 origin-bottom md:origin-center mb-12 md:mb-0 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Progress Road Line */}
-            <div className="relative h-40 bg-muted/30 border-b overflow-hidden">
+            <div className="relative h-40 bg-muted/30 border-b overflow-hidden shrink-0">
               {/* Road */}
               <div className="absolute bottom-6 left-0 right-0 h-[4px] bg-black/80 mx-6 rounded-full" />
               {/* Bike travelling along the road */}
@@ -178,7 +178,7 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
             </div>
 
             {/* Questions */}
-            <div className="p-6 md:p-8 overflow-y-auto h-[440px] mt-2" style={{ maxHeight: "calc(85vh - 14rem)" }}>
+            <div className="p-6 md:p-8 overflow-y-auto flex-1 min-h-0 mt-2">
               <AnimatePresence mode="wait">
                 {step === 0 && (
                   <motion.div
@@ -316,7 +316,7 @@ export function CycleFinderModal({ isOpen, onClose }: CycleFinderModalProps) {
             </div>
 
             {/* Navigation Footer */}
-            <div className="flex items-center justify-between px-6 py-4 border-t bg-muted/20">
+            <div className="flex items-center justify-between px-6 py-4 border-t bg-muted/20 shrink-0">
               <button
                 onClick={handleBack}
                 disabled={step === 0}

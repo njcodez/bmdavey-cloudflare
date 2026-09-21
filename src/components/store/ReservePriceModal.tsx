@@ -58,7 +58,8 @@ export function ReservePriceModal({
 }: ReservePriceModalProps) {
   const [step, setStep] = useState<"form" | "success">("form");
   const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [couponCode, setCouponCode] = useState("");
@@ -93,12 +94,19 @@ export function ReservePriceModal({
     setError("");
     setIsSubmitting(true);
 
-    const contactStr = contact.trim();
-    const isPhone = /^\d{10}$/.test(contactStr);
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactStr);
+    const mobileStr = mobile.trim();
+    const emailStr = email.trim();
+    const isPhone = /^\d{10}$/.test(mobileStr);
+    const isValidEmail = emailStr ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailStr) : true;
 
-    if (!isPhone && !isEmail) {
-      setError("Please enter a valid 10-digit phone number or a valid email address.");
+    if (!isPhone) {
+      setError("Please enter a valid 10-digit mobile number.");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (!isValidEmail) {
+      setError("Please enter a valid email address.");
       setIsSubmitting(false);
       return;
     }
@@ -106,7 +114,8 @@ export function ReservePriceModal({
     try {
       const result = await createCoupon({
         userName: name,
-        contactInfo: contactStr,
+        mobile: mobileStr,
+        email: emailStr || undefined,
         productId,
         variantId,
         lockedPrice,
@@ -139,7 +148,8 @@ export function ReservePriceModal({
       setTimeout(() => {
         setStep("form");
         setName("");
-        setContact("");
+        setMobile("");
+        setEmail("");
         setError("");
         setCouponCode("");
         setExpiresAt("");
@@ -162,7 +172,7 @@ export function ReservePriceModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-md bg-background rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-md bg-background rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -197,13 +207,25 @@ export function ReservePriceModal({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="reserve-contact">Email or Phone</Label>
+                    <Label htmlFor="reserve-mobile">Mobile Number <span className="text-destructive">*</span></Label>
                     <Input
-                      id="reserve-contact"
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                      placeholder="you@example.com or +1234567890"
+                      id="reserve-mobile"
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value)}
+                      placeholder="10-digit mobile number"
+                      type="tel"
                       required
+                      className="h-12"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="reserve-email">Email Address</Label>
+                    <Input
+                      id="reserve-email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      type="email"
                       className="h-12"
                     />
                   </div>
@@ -214,7 +236,7 @@ export function ReservePriceModal({
 
                   <Button
                     type="submit"
-                    disabled={isSubmitting || !name || !contact}
+                    disabled={isSubmitting || !name || !mobile}
                     className="w-full btn-cred text-base h-12 font-bold"
                   >
                     {isSubmitting ? "Reserving..." : "Lock This Price"}
@@ -233,7 +255,7 @@ export function ReservePriceModal({
 
                 <h2 className="text-2xl font-bold mb-2">Price Locked!</h2>
                 <p className="text-muted-foreground mb-6">
-                  Your reserved price of <span className="font-bold text-primary">₹{lockedPrice}</span> is
+                  Your exclusive price of <span className="font-bold text-primary">₹{lockedPrice}</span> is
                   now locked for 48 hours. Show this code in-store to claim your bicycle.
                 </p>
 

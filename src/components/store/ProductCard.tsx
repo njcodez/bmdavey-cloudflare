@@ -88,33 +88,33 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <CardContent className="p-4 flex flex-col gap-1 flex-grow bg-white">
+        <CardContent className="p-3 sm:p-4 flex flex-col gap-1 flex-grow bg-white">
           <div className="flex items-start justify-between w-full mb-4">
             <div className="flex flex-col text-left">
-              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+              <div className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wider">
                 {product.brand}
               </div>
-              <h3 className="font-semibold text-lg md:text-xl leading-tight line-clamp-2 mt-0.5 text-black">
+              <h3 className="font-semibold text-sm sm:text-base md:text-lg leading-tight line-clamp-2 mt-0.5 text-black">
                 {product.name}
               </h3>
               {isAllOutOfStock && (
-                <span className="mt-1 text-xs font-bold text-red-500 uppercase tracking-wider">
+                <span className="mt-1 text-[10px] sm:text-xs font-bold text-red-500 uppercase tracking-wider">
                   Out of Stock
                 </span>
               )}
             </div>
             
             <div className="flex flex-col items-end text-right shrink-0 pl-4">
-              <span className="text-xl md:text-2xl font-black text-[#008FEF]">
-                ₹{product.base_price}
+              <span className="text-base sm:text-lg md:text-2xl font-black text-[#008FEF]">
+                ₹{Math.round(parseFloat(product.base_price))}
               </span>
               {parseFloat(product.mrp) > parseFloat(product.base_price) && (
-                <span className="text-xs md:text-sm font-medium text-muted-foreground line-through decoration-1 mt-0.5">
-                  ₹{product.mrp}
+                <span className="text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground line-through decoration-1 mt-0.5">
+                  ₹{Math.round(parseFloat(product.mrp))}
                 </span>
               )}
               {parseFloat(product.mrp) > parseFloat(product.base_price) && (
-                <span className="text-xs font-bold text-[#00b341] mt-0.5">
+                <span className="text-[10px] sm:text-xs font-bold text-[#00b341] mt-0.5">
                   {Math.round(((parseFloat(product.mrp) - parseFloat(product.base_price)) / parseFloat(product.mrp)) * 100)}% OFF
                 </span>
               )}
@@ -123,7 +123,7 @@ export function ProductCard({ product }: ProductCardProps) {
           
           <div className="pt-4 border-t border-black/10 w-full mt-auto">
             <div 
-              className={`btn-cred w-full py-3 font-bold text-sm uppercase tracking-wider text-center transition-colors duration-300 ${
+              className={`btn-cred w-full py-2 px-1 sm:py-2.5 font-bold text-[10px] sm:text-xs uppercase tracking-wider text-center transition-colors duration-300 ${
                 isAllOutOfStock 
                   ? "bg-muted text-muted-foreground cursor-not-allowed" 
                   : "bg-black text-white"
