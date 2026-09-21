@@ -1,6 +1,6 @@
 # Project Instructions & Workflow
 
-Welcome to the B M Davey & Co web application project. This guide outlines the deployment workflow, local testing procedures, and architectural decisions made for the Cloudflare Workers + OpenNext deployment. 
+Welcome to the B. M. Davey & Co. web application project. This guide outlines the deployment workflow, local testing procedures, and architectural decisions made for the Cloudflare Workers + OpenNext deployment. 
 
 ## 🚀 Deployment Workflow
 

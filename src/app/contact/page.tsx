@@ -43,7 +43,7 @@ export default function ContactPage() {
             <Phone className="w-5 h-5 text-primary mt-1" />
             <div>
               <p className="font-semibold">Phone</p>
-              
+
               <a href="tel:+919884945605" className="text-primary hover:underline">
                 +91 98849 45605
               </a>
@@ -53,10 +53,10 @@ export default function ContactPage() {
             <MapPin className="w-5 h-5 text-primary mt-1" />
             <div>
               <p className="font-semibold">Address</p>
-              <p className="text-muted-foreground mb-1">B M Davey & Co, Chennai</p>
-              <a 
-                href="https://maps.app.goo.gl/CVaqP6zX9bvQ8rq4A" 
-                target="_blank" 
+              <p className="text-muted-foreground mb-1">B. M. Davey & Co., Chennai</p>
+              <a
+                href="https://maps.app.goo.gl/CVaqP6zX9bvQ8rq4A"
+                target="_blank"
                 rel="noreferrer"
                 className="text-primary font-medium hover:underline flex items-center gap-1"
               >

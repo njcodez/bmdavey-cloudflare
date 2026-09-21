@@ -47,7 +47,7 @@ export default async function HomePage({
   // Check for common mobile and tablet identifiers
   const isMobile = /mobile|android|iphone|ipad|ipod/i.test(userAgent);
 
-  const limit = isMobile ? 5 : 12;
+  const limit = isMobile ? 8 : 12;
 
   const { products, pagination, availableFilters } = await getStorefrontProducts({
     page,

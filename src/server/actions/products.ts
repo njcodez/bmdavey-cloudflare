@@ -57,11 +57,12 @@ export async function toggleOutOfStock(id: number, makeOutOfStock: boolean) {
 
 export async function deleteProduct(id: number, masterPass: string) {
   if (masterPass !== env.MASTER_DELETE_PASS) {
-    throw new Error("Invalid master password");
+    return { success: false, error: "Invalid master password" };
   }
 
   // Drizzle handles cascading deletes if configured in schema. 
   // We added onDelete: 'cascade' to variants and images.
   await db.delete(products).where(eq(products.id, id));
   revalidatePath("/admin/products");
+  return { success: true };
 }

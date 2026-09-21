@@ -11,6 +11,8 @@ export const env = createEnv({
     ADMIN_PASS: z.string().min(1).default("admin"),
     MASTER_DELETE_PASS: z.string().min(1).optional(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+    RESEND_API_KEY: z.string().min(1).optional(),
+    RESEND_ADMIN_EMAIL: z.string().email().optional(),
   },
 
   client: {
@@ -25,6 +27,8 @@ export const env = createEnv({
     ADMIN_PASS: process.env.ADMIN_PASS,
     MASTER_DELETE_PASS: process.env.MASTER_DELETE_PASS,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_ADMIN_EMAIL: process.env.RESEND_ADMIN_EMAIL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },

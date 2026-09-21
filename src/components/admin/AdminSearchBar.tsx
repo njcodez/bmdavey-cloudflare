@@ -37,6 +37,7 @@ export function AdminSearchBar({ placeholder = "Search..." }: { placeholder?: st
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
         className="pl-10 h-10"
+        autoComplete="off"
       />
     </div>
   );

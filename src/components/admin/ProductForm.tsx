@@ -38,6 +38,7 @@ import {
 } from "~/components/ui/popover";
 import { Check, ChevronsUpDown, Plus, Trash2 } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { ImportProductDialog } from "./ImportProductDialog";
 
 const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -176,6 +177,29 @@ export function ProductForm({ initialData }: ProductFormProps) {
     return await uploadImageAction(formData);
   };
 
+  const handleImport = (importedData: Partial<FormValues> & { variants: NonNullable<FormValues["variants"]> }) => {
+    const currentVariants = form.getValues("variants") ?? [];
+    const mergedVariants = importedData.variants.map((importVar) => {
+      const existingVar = currentVariants.find((v) => v.color_name === importVar.color_name);
+      return {
+        ...importVar,
+        id: existingVar?.id,
+        images: Array.from(new Set([...(existingVar?.images ?? []), ...importVar.images])),
+        _files: existingVar?._files ?? undefined,
+      };
+    });
+
+    form.reset({
+      ...form.getValues(),
+      ...importedData,
+      id: initialData?.id,
+      base_price: form.getValues("base_price"),
+      mrp: form.getValues("mrp"),
+      discount_percent: form.getValues("discount_percent"),
+      variants: mergedVariants,
+    } as FormValues);
+  };
+
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     setError("");
@@ -226,8 +250,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
       {error && <div className="bg-destructive/10 text-destructive p-4 rounded-md">{error}</div>}
       
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Basic Information</CardTitle>
+          <ImportProductDialog onImport={handleImport} />
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">

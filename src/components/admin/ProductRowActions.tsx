@@ -50,7 +50,10 @@ export function ProductRowActions({ id, discountHighlight, isFeatured, isAllOutO
     setError("");
     setIsDeleting(true);
     try {
-      await deleteProduct(id, masterPass);
+      const res = await deleteProduct(id, masterPass);
+      if (res?.error) {
+        setError(res.error);
+      }
     } catch (err: unknown) {
       setError((err as Error).message || "Failed to delete");
     } finally {
@@ -106,6 +109,7 @@ export function ProductRowActions({ id, discountHighlight, isFeatured, isAllOutO
               placeholder="Master Password"
               value={masterPass}
               onChange={(e) => setMasterPass(e.target.value)}
+              autoComplete="new-password"
             />
             {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
           </div>

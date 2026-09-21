@@ -76,7 +76,7 @@ export function Header() {
         className="w-full max-w-[1600px] backdrop-blur-lg rounded-3xl border pointer-events-auto"
         style={{ backgroundColor: "rgba(0,0,0,0.9)", borderColor: "rgba(255,255,255,0.1)" }}
       >
-        <div className="flex h-20 md:h-24 items-center justify-between px-6 mx-auto w-full">
+        <div className="relative flex h-20 md:h-24 items-center justify-between px-6 mx-auto w-full">
           <Link href="/" className="flex items-center">
             <Image
               src="/logo.png"
@@ -89,13 +89,55 @@ export function Header() {
               unoptimized
             />
           </Link>
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center gap-8 text-sm h-full">
+            <div className="relative group flex items-center h-full">
+              <Link
+                href="/?category=Kids#products-section"
+                className="text-white font-bold hover:text-white/80 transition-colors drop-shadow-md py-4"
+              >
+                Kids
+              </Link>
+              <div className="absolute left-1/2 -translate-x-1/2 top-full pt-1 w-40 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
+                <div className="relative bg-white text-black rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100">
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45 rounded-tl-sm" />
+                  <div className="relative bg-white rounded-xl overflow-hidden flex flex-col z-10">
+                    <Link href="/?category=Kids&wheelSize=14#products-section" className="px-4 py-3 hover:bg-gray-50 font-medium text-sm transition-colors text-center">3 to 6 years</Link>
+                    <Link href="/?category=Kids&wheelSize=16#products-section" className="px-4 py-3 hover:bg-gray-50 font-medium text-sm transition-colors text-center border-t border-gray-50">4 to 8 years</Link>
+                    <Link href="/?category=Kids&wheelSize=20#products-section" className="px-4 py-3 hover:bg-gray-50 font-medium text-sm transition-colors text-center border-t border-gray-50">6 to 12 years</Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative group flex items-center h-full">
+              <Link
+                href="/?targetDemographic=Adults#products-section"
+                className="text-white font-bold hover:text-white/80 transition-colors drop-shadow-md py-4"
+              >
+                Adults
+              </Link>
+              <div className="absolute left-1/2 -translate-x-1/2 top-full pt-1 w-40 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
+                <div className="relative bg-white text-black rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100">
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45 rounded-tl-sm" />
+                  <div className="relative bg-white rounded-xl overflow-hidden flex flex-col z-10">
+                    <Link href="/?targetDemographic=Adults&gears=7&gears=14&gears=18&gears=21#products-section" className="px-4 py-3 hover:bg-gray-50 font-medium text-sm transition-colors text-center">Geared</Link>
+                    <Link href="/?targetDemographic=Adults&gears=1#products-section" className="px-4 py-3 hover:bg-gray-50 font-medium text-sm transition-colors text-center border-t border-gray-50">Non-Geared</Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative group flex items-center h-full">
+              <Link
+                href="/?category=Hybrid#products-section"
+                className="text-white font-bold hover:text-white/80 transition-colors drop-shadow-md py-4"
+              >
+                Hybrid
+              </Link>
+            </div>
+          </nav>
+
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <Link
-              href="/#products-section"
-              className="text-white font-bold hover:text-white/80 transition-colors drop-shadow-md"
-            >
-              Collection
-            </Link>
             <Link
               href="/about"
               className="text-white font-bold hover:text-white/80 transition-colors drop-shadow-md"
@@ -142,7 +184,9 @@ export function Header() {
               className="md:hidden overflow-hidden border-t border-white/20 bg-black/50"
             >
               <nav className="flex flex-col items-center gap-4 py-6 text-sm">
-                <Link href="/#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Collection</Link>
+                <Link href="/?category=Kids#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Kids</Link>
+                <Link href="/?targetDemographic=Adults#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Adults</Link>
+                <Link href="/?category=Hybrid#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Hybrid</Link>
                 <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">About Us</Link>
                 <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Contact</Link>
                 <Link href={isLoggedIn ? "/admin/products" : "/admin/login"} onClick={() => setIsMobileMenuOpen(false)} className="btn-cred-white text-xs px-4 py-2 rounded-lg font-bold bg-[#008FEF] text-white">
