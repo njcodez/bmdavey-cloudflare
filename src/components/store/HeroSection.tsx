@@ -35,11 +35,15 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.1]"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-7xl font-black tracking-tight leading-[1.1]"
           >
-            <span className="block">First <span className="text-[#008FEF]">Pedals</span>.</span>
-            <span className="block">Daily <span className="text-[#008FEF]">Runs</span>.</span>
-            <span className="block">Pro <span className="text-[#008FEF]">Trails</span>.</span>
+            <span className="block">
+              <span className="md:hidden">See</span>
+              <span className="hidden md:inline">Browse</span>{" "}
+              <span className="text-[#008FEF]">Online</span>.
+            </span>
+            <span className="block">Try <span className="text-[#008FEF]">Offline</span>.</span>
+            <span className="block">Ride <span className="text-[#008FEF]">Sure</span>.</span>
           </motion.h1>
 
           <motion.p

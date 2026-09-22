@@ -1,30 +1,14 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ChevronLeft, Mail, Phone, MapPin } from "lucide-react";
+import { Header } from "~/components/store/Header";
+import { Footer } from "~/components/store/Footer";
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-lg rounded-b-3xl border-b border-white/5">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6 mx-auto">
-          <Link href="/" className="flex items-center">
-            <Image src="/logo.png" alt="BM Davey" width={120} height={40} className="h-9 w-auto object-contain" />
-          </Link>
-          <nav className="flex items-center gap-6 text-sm font-medium">
-            <Link href="/" className="text-white/60 hover:text-white transition-colors">
-              Collection
-            </Link>
-            <Link href="/about" className="text-white/60 hover:text-white transition-colors">
-              About Us
-            </Link>
-            <Link href="/contact" className="text-white hover:text-white transition-colors">
-              Contact
-            </Link>
-          </nav>
-        </div>
-      </header>
+    <main className="min-h-dvh bg-background flex flex-col relative">
+      <Header />
 
-      <div className="container mx-auto px-4 md:px-6 py-16 max-w-3xl">
+      <div className="container mx-auto px-4 md:px-6 pt-32 pb-16 max-w-3xl flex-grow">
         <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
           <ChevronLeft className="w-4 h-4 mr-1" /> Back
         </Link>
@@ -66,6 +50,7 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   );
 }

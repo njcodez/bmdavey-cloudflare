@@ -7,9 +7,11 @@ import { type ProductWithRelations } from "~/server/db/schema";
 
 type ProductCardProps = {
   product: ProductWithRelations;
+  onImageLoad?: () => void;
+  shouldLoad?: boolean;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, onImageLoad, shouldLoad = true }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -52,15 +54,17 @@ export function ProductCard({ product }: ProductCardProps) {
 
           {/* Base Image (Always Rendered) */}
           {displayImages.length > 0 ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={displayImages[0]}
-              alt={product.name}
-              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${isAllOutOfStock ? 'grayscale opacity-75' : ''} ${
-                isHovered && !isAllOutOfStock && displayImages.length > 1 && currentIndex !== 0 ? "opacity-0" : "opacity-100"
-              }`}
-              loading="lazy"
-            />
+            shouldLoad ? (
+              <img
+                src={displayImages[0]}
+                alt={product.name}
+                className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${isAllOutOfStock ? 'grayscale opacity-75' : ''} ${
+                  isHovered && !isAllOutOfStock && displayImages.length > 1 && currentIndex !== 0 ? "opacity-0" : "opacity-100"
+                }`}
+                onLoad={onImageLoad}
+                onError={onImageLoad}
+              />
+            ) : null
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-muted">
               <span className="text-muted-foreground text-sm">No Image</span>

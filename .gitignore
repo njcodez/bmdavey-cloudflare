@@ -7,7 +7,7 @@
 
 /AGENTS
 /assets
-
+/.agents
 # testing
 /coverage
 

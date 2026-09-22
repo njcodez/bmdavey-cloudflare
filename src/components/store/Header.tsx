@@ -150,12 +150,14 @@ export function Header() {
             >
               Contact
             </Link>
-            <Link
-              href={isLoggedIn ? "/admin/products" : "/admin/login"}
-              className="btn-cred-white text-xs px-4 py-2 rounded-lg font-bold bg-[#008FEF] text-white ml-2 hover:bg-[#008FEF]/90 border border-black/20"
-            >
-              {isLoggedIn ? "Admin" : "Admin Login"}
-            </Link>
+            {isLoggedIn && (
+              <Link
+                href="/admin/products"
+                className="btn-cred-white text-xs px-4 py-2 rounded-lg font-bold bg-[#008FEF] text-white ml-2 hover:bg-[#008FEF]/90 border border-black/20"
+              >
+                Admin
+              </Link>
+            )}
             {isLoggedIn && (
               <button
                 onClick={() => { void handleLogout(); }}
@@ -189,9 +191,11 @@ export function Header() {
                 <Link href="/?category=Hybrid#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Hybrid</Link>
                 <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">About Us</Link>
                 <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Contact</Link>
-                <Link href={isLoggedIn ? "/admin/products" : "/admin/login"} onClick={() => setIsMobileMenuOpen(false)} className="btn-cred-white text-xs px-4 py-2 rounded-lg font-bold bg-[#008FEF] text-white">
-                  {isLoggedIn ? "Admin" : "Admin Login"}
-                </Link>
+                {isLoggedIn && (
+                  <Link href="/admin/products" onClick={() => setIsMobileMenuOpen(false)} className="btn-cred-white text-xs px-4 py-2 rounded-lg font-bold bg-[#008FEF] text-white">
+                    Admin
+                  </Link>
+                )}
                 {isLoggedIn && (
                   <button onClick={() => { void handleLogout(); setIsMobileMenuOpen(false); }} className="btn-cred-white text-xs px-4 py-2 rounded-lg font-bold bg-black text-white">
                     Logout
