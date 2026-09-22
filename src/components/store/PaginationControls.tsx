@@ -17,6 +17,11 @@ export function PaginationControls({ currentPage, totalPages }: PaginationContro
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
     
+    // Dispatch event to show loading overlay in the grid that waits for images
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("start-product-loading"));
+    }
+    
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage.toString());
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -30,7 +35,7 @@ export function PaginationControls({ currentPage, totalPages }: PaginationContro
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-4 py-8 mt-auto">
+    <div className="flex items-center justify-center gap-4 py-8 mt-auto relative z-50">
       <Button
         variant="outline"
         size="icon"

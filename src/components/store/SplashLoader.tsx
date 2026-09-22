@@ -3,23 +3,21 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
-export function SplashLoader({ children }: { children: React.ReactNode }) {
-  const [showSplash, setShowSplash] = useState(false);
+export function SplashLoader({ children, initialShowSplash = true }: { children: React.ReactNode; initialShowSplash?: boolean }) {
+  const [showSplash, setShowSplash] = useState(initialShowSplash);
   const [fadeOut, setFadeOut] = useState(false);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(!initialShowSplash);
 
   useEffect(() => {
-    // Only show splash once per browser session
-    if (sessionStorage.getItem("bmdavey-splash-shown")) {
+    if (!initialShowSplash) {
       setDone(true);
       return;
     }
 
-    setShowSplash(true);
-
     const timer = setTimeout(() => {
       setFadeOut(true);
-      sessionStorage.setItem("bmdavey-splash-shown", "1");
+      // Set session cookie so the server knows for future requests
+      document.cookie = "bmdavey-splash-shown=1; path=/";
       setTimeout(() => {
         setShowSplash(false);
         setDone(true);
@@ -27,7 +25,7 @@ export function SplashLoader({ children }: { children: React.ReactNode }) {
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [initialShowSplash]);
 
   // If splash was already shown, render children immediately
   if (done && !showSplash) {

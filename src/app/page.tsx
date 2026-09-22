@@ -5,8 +5,9 @@ import { PaginationControls } from "~/components/store/PaginationControls";
 import { SearchBar } from "~/components/store/SearchBar";
 import { HeroSection } from "~/components/store/HeroSection";
 import { Header } from "~/components/store/Header";
+import { Footer } from "~/components/store/Footer";
 import { SplashLoader } from "~/components/store/SplashLoader";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { Suspense } from "react";
 
 export default async function HomePage({
@@ -47,6 +48,9 @@ export default async function HomePage({
   // Check for common mobile and tablet identifiers
   const isMobile = /mobile|android|iphone|ipad|ipod/i.test(userAgent);
 
+  const cookieStore = await cookies();
+  const hasSeenSplash = cookieStore.has("bmdavey-splash-shown");
+
   const limit = isMobile ? 8 : 12;
 
   const { products, pagination, availableFilters } = await getStorefrontProducts({
@@ -69,7 +73,7 @@ export default async function HomePage({
   });
 
   return (
-    <SplashLoader>
+    <SplashLoader initialShowSplash={!hasSeenSplash}>
     <main className="min-h-dvh bg-background relative flex flex-col scroll-smooth">
       {/* --- ANIMATED SCROLL HEADER --- */}
       <Header />
@@ -95,7 +99,7 @@ export default async function HomePage({
 
         <div className="container flex flex-col gap-6 px-4 md:px-6 py-8 mx-auto">
           {/* Grid */}
-          <div className="w-full flex flex-col min-h-[500px]">
+          <div className="w-full flex flex-col min-h-[500px] relative">
             {pagination.isFeaturedPage && (
               <div className="mb-6 flex items-center gap-2 text-primary font-semibold">
                 <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -114,6 +118,7 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+      <Footer />
     </main>
     </SplashLoader>
   );
