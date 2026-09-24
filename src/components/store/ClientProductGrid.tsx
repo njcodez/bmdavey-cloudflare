@@ -54,8 +54,8 @@ export function ClientProductGrid({ products }: ClientProductGridProps) {
         // Add a tiny delay so it feels smooth
         timeout = setTimeout(() => setIsLoading(false), 150);
       } else {
-        // Hard 1-second timeout safety valve
-        timeout = setTimeout(() => setIsLoading(false), 1000);
+        // Hard 1.5-second timeout safety valve
+        timeout = setTimeout(() => setIsLoading(false), 1500);
       }
     }
     return () => clearTimeout(timeout);

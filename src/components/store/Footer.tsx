@@ -15,6 +15,26 @@ export function Footer() {
           </Link>
         </div>
       </div>
+      <div className="container mx-auto px-4 md:px-6 mt-8 text-center text-xs sm:text-sm text-blue-400">
+        Crafted by{" "}
+        <a 
+          href="https://neerajs.web.app" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="font-medium hover:text-blue-300 hover:underline transition-all inline-block py-1 md:py-0"
+        >
+          Neeraj
+        </a>{" "}
+        from{" "}
+        <a 
+          href="https://trelvion.web.app" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="font-medium hover:text-blue-300 hover:underline transition-all inline-block py-1 md:py-0"
+        >
+          Trelvion Solutions
+        </a>
+      </div>
     </footer>
   );
 }

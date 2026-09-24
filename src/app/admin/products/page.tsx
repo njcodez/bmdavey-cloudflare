@@ -4,7 +4,6 @@ import { ProductRowActions } from "~/components/admin/ProductRowActions";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "~/components/ui/button";
-import { Download } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,6 +14,7 @@ import {
 } from "~/components/ui/table";
 import { AdminSearchBar } from "~/components/admin/AdminSearchBar";
 import { Suspense } from "react";
+import { BackupButton } from "~/components/admin/BackupButton";
 
 const PAGE_SIZE = 25;
 
@@ -48,11 +48,7 @@ export default async function AdminProductsPage({
           <Link href="/admin/products/new">
             <Button>Create Product</Button>
           </Link>
-          <a href="/api/admin/backup" download>
-            <Button variant="secondary" className="gap-2">
-              <Download className="w-4 h-4" /> Backup
-            </Button>
-          </a>
+          <BackupButton />
           <form action={handleLogout}>
             <Button variant="outline" type="submit">Logout</Button>
           </form>
