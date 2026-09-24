@@ -55,6 +55,7 @@ export function ProductCard({ product, onImageLoad, shouldLoad = true }: Product
           {/* Base Image (Always Rendered) */}
           {displayImages.length > 0 ? (
             shouldLoad ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={displayImages[0]}
                 alt={product.name}

@@ -5,6 +5,8 @@ import { products, productVariants } from "~/server/db/schema";
 import { eq, ilike, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { env } from "~/env";
+import { deleteSupabaseImages } from "~/server/actions/delete-image";
+
 
 export async function getProducts(search?: string) {
   if (search?.trim()) {
@@ -60,9 +62,33 @@ export async function deleteProduct(id: number, masterPass: string) {
     return { success: false, error: "Invalid master password" };
   }
 
+  // Fetch images before cascade deletion
+  const productData = await db.query.products.findFirst({
+    where: eq(products.id, id),
+    with: {
+      productVariants: {
+        with: { productImages: true },
+      },
+    },
+  });
+
+  const urlsToDelete: string[] = [];
+  if (productData) {
+    for (const variant of productData.productVariants) {
+      for (const img of variant.productImages) {
+        urlsToDelete.push(img.url);
+      }
+    }
+  }
+
   // Drizzle handles cascading deletes if configured in schema. 
   // We added onDelete: 'cascade' to variants and images.
   await db.delete(products).where(eq(products.id, id));
+  
+  if (urlsToDelete.length > 0) {
+    await deleteSupabaseImages(urlsToDelete);
+  }
+
   revalidatePath("/admin/products");
   return { success: true };
 }

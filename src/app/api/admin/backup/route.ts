@@ -49,7 +49,7 @@ export async function GET() {
             const arrayBuffer = await res.arrayBuffer();
             const safeProductName = product.name.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
             const safeColorName = variant.color_name.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
-            const filename = `${safeProductName}_${safeColorName}_${imgIndex}.png`;
+            const filename = `${product.id}_${safeProductName}_${safeColorName}_${imgIndex}.png`;
             
             zip.file(`images/${filename}`, arrayBuffer);
             imageFilenames.push(`images/${filename}`);

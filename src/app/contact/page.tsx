@@ -18,8 +18,8 @@ export default function ContactPage() {
             <Mail className="w-5 h-5 text-primary mt-1" />
             <div>
               <p className="font-semibold">Email</p>
-              <a href="mailto:info@bmdavey.com" className="text-primary hover:underline">
-                info@bmdavey.com
+              <a href="mailto:info@bmdavey.in" className="text-primary hover:underline">
+                info@bmdavey.in
               </a>
             </div>
           </div>

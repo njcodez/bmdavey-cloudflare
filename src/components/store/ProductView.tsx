@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Check, ChevronLeft, ChevronRight, ShieldCheck, Timer, Sparkles } from "lucide-react";
@@ -30,16 +30,28 @@ export function ProductView({ product }: ProductViewProps) {
   const paginate = (newDirection: number) => {
     setDirection(newDirection);
     setActiveImageIdx((prev) => {
-      let next = prev + newDirection;
-      if (next < 0) next = images.length - 1;
-      if (next >= images.length) next = 0;
+      const next = prev + newDirection;
+      if (next < 0) {
+        const currentIndex = variants.findIndex(v => v.id === selectedVariantId);
+        const prevVariant = variants[currentIndex > 0 ? currentIndex - 1 : variants.length - 1];
+        if (prevVariant && prevVariant.id !== selectedVariantId) {
+          setTimeout(() => setSelectedVariantId(prevVariant.id), 0);
+          return (prevVariant.productImages?.length ?? 1) - 1;
+        }
+        return images.length > 0 ? images.length - 1 : 0;
+      }
+      if (next >= images.length) {
+        const currentIndex = variants.findIndex(v => v.id === selectedVariantId);
+        const nextVariant = variants[currentIndex < variants.length - 1 ? currentIndex + 1 : 0];
+        if (nextVariant && nextVariant.id !== selectedVariantId) {
+          setTimeout(() => setSelectedVariantId(nextVariant.id), 0);
+          return 0;
+        }
+        return 0;
+      }
       return next;
     });
   };
-
-  useEffect(() => {
-    setActiveImageIdx(0);
-  }, [selectedVariantId]);
 
   const selectedVariant = variants.find((v) => v.id === selectedVariantId);
   const images = selectedVariant?.productImages?.map((img) => img.url) ?? [];
@@ -140,10 +152,8 @@ export function ProductView({ product }: ProductViewProps) {
                       }
                     }}
                     onClick={() => {
-                      if (window.innerWidth >= 768) {
-                        setIsFullscreen(true);
-                        setZoomScale(1);
-                      }
+                      setIsFullscreen(true);
+                      setZoomScale(1);
                     }}
                   />
                 </AnimatePresence>
@@ -256,7 +266,11 @@ export function ProductView({ product }: ProductViewProps) {
                     return (
                       <button
                         key={variant.id}
-                        onClick={() => setSelectedVariantId(variant.id)}
+                        onClick={() => {
+                          setSelectedVariantId(variant.id);
+                          setActiveImageIdx(0);
+                          setDirection(0);
+                        }}
                         className={cn(
                           "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center shadow-sm",
                           isSelected
@@ -444,7 +458,8 @@ export function ProductView({ product }: ProductViewProps) {
               style={{
                 transform: `scale(${zoomScale})`,
                 transformOrigin: zoomOrigin,
-                cursor: zoomScale === 1 ? 'zoom-in' : 'zoom-out'
+                cursor: zoomScale === 1 ? 'zoom-in' : 'zoom-out',
+                touchAction: 'pinch-zoom'
               }}
               onClick={(e) => {
                 e.stopPropagation();

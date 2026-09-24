@@ -4,6 +4,7 @@ import { db } from "~/server/db";
 import { products, productVariants, productImages } from "~/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { deleteSupabaseImages } from "~/server/actions/delete-image";
 
 type VariantData = {
   id?: number;
@@ -37,7 +38,9 @@ type ProductData = {
 };
 
 export async function updateProduct(id: number, data: ProductData) {
-  return await db.transaction(async (tx) => {
+  const urlsToDelete: string[] = [];
+
+  const resultId = await db.transaction(async (tx) => {
     await tx
       .update(products)
       .set({
@@ -76,6 +79,15 @@ export async function updateProduct(id: number, data: ProductData) {
       .filter((vId) => !incomingVariantIds.includes(vId));
 
     if (variantsToDelete.length > 0) {
+      const imagesToDelete = await tx
+        .select({ url: productImages.url })
+        .from(productImages)
+        .where(inArray(productImages.variant_id, variantsToDelete));
+        
+      for (const img of imagesToDelete) {
+        urlsToDelete.push(img.url);
+      }
+
       await tx
         .delete(productVariants)
         .where(inArray(productVariants.id, variantsToDelete));
@@ -96,6 +108,17 @@ export async function updateProduct(id: number, data: ProductData) {
           .where(eq(productVariants.id, variant.id));
         
         variantId = variant.id;
+
+        const oldImages = await tx
+          .select({ url: productImages.url })
+          .from(productImages)
+          .where(eq(productImages.variant_id, variantId));
+          
+        for (const img of oldImages) {
+          if (!variant.images.includes(img.url)) {
+            urlsToDelete.push(img.url);
+          }
+        }
 
         await tx
           .delete(productImages)
@@ -128,7 +151,13 @@ export async function updateProduct(id: number, data: ProductData) {
       }
     }
 
-    revalidatePath("/admin/products");
     return id;
   });
+
+  if (urlsToDelete.length > 0) {
+    await deleteSupabaseImages(urlsToDelete);
+  }
+
+  revalidatePath("/admin/products");
+  return resultId;
 }
