@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { toggleDiscountHighlight, toggleIsFeatured, deleteProduct, toggleOutOfStock } from "~/server/actions/products";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   AlertDialog,
   
@@ -26,6 +26,7 @@ type ProductRowActionsProps = {
 
 export function ProductRowActions({ id, discountHighlight, isFeatured, isAllOutOfStock }: ProductRowActionsProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [masterPass, setMasterPass] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +44,8 @@ export function ProductRowActions({ id, discountHighlight, isFeatured, isAllOutO
   };
 
   const handleEdit = () => {
-    router.push(`/admin/products/${id}/edit`);
+    const query = searchParams.toString();
+    router.push(`/admin/products/${id}/edit${query ? `?${query}` : ""}`);
   };
 
   const handleDelete = async () => {

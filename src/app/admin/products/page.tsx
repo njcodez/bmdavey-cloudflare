@@ -45,7 +45,7 @@ export default async function AdminProductsPage({
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Products ({allProducts.length})</h1>
         <div className="flex items-center gap-4">
-          <Link href="/admin/products/new">
+          <Link href={`/admin/products/new${page > 1 || search ? `?page=${page}${search ? `&search=${search}` : ""}` : ""}`}>
             <Button>Create Product</Button>
           </Link>
           <BackupButton />
@@ -111,20 +111,14 @@ export default async function AdminProductsPage({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-4">
-          {currentPage > 1 && (
-            <Link href={`/admin/products?page=${currentPage - 1}${search ? `&search=${search}` : ""}`}>
-              <Button variant="outline" size="sm">Previous</Button>
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+            <Link key={pageNum} href={`/admin/products?page=${pageNum}${search ? `&search=${search}` : ""}`}>
+              <Button variant={currentPage === pageNum ? "default" : "outline"} size="sm">
+                {pageNum}
+              </Button>
             </Link>
-          )}
-          <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
-          </span>
-          {currentPage < totalPages && (
-            <Link href={`/admin/products?page=${currentPage + 1}${search ? `&search=${search}` : ""}`}>
-              <Button variant="outline" size="sm">Next</Button>
-            </Link>
-          )}
+          ))}
         </div>
       )}
     </div>
