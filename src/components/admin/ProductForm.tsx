@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { createProduct } from "~/server/actions/product-mutations";
 import { updateProduct } from "~/server/actions/update-product";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BICYCLE_COLORS } from "~/lib/constants/colors";
 import keyFeaturesData from "~/lib/keyFeatures.json";
 import { uploadImageAction } from "~/server/actions/upload-image";
@@ -81,6 +81,7 @@ type ProductFormProps = {
 
 export function ProductForm({ initialData }: ProductFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [popoverOpen, setPopoverOpen] = useState<Record<number, boolean>>({});
@@ -237,7 +238,8 @@ export function ProductForm({ initialData }: ProductFormProps) {
         await createProduct(payload);
       }
       
-      router.push("/admin/products");
+      const query = searchParams.toString();
+      router.push(`/admin/products${query ? `?${query}` : ""}`);
     } catch (err: unknown) {
       setError((err as Error).message ?? "Failed to create product");
     } finally {

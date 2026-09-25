@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "B. M. Davey & Co. | Premium Bicycles in Chennai",
   description: "A trusted name for over 90 years. B. M. Davey & Co. is a premium bicycle store based in Chennai. Discover our wide range of bicycles, book online, and visit our showroom.",
   keywords: ["Bicycles in Chennai", "Cycle Shop Chennai", "B M Davey", "Premium Bikes", "Kids Cycles", "Adult Cycles"],
-  icons: [{ rel: "icon", url: "/logo.png" }],
+  icons: [{ rel: "icon", url: "/favico.ico" }],
   openGraph: {
     title: "B. M. Davey & Co. | Premium Bicycles in Chennai",
     description: "A trusted name for over 90 years. B. M. Davey & Co. is a premium bicycle store based in Chennai.",

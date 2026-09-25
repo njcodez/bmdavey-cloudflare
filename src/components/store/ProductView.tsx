@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Check, ChevronLeft, ChevronRight, ShieldCheck, Timer, Sparkles } from "lucide-react";
@@ -27,30 +27,54 @@ export function ProductView({ product }: ProductViewProps) {
   const [zoomScale, setZoomScale] = useState(1);
   const [zoomOrigin, setZoomOrigin] = useState("50% 50%");
 
+  // Handle hardware back button for fullscreen
+  
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isFullscreen) {
+        setIsFullscreen(false);
+        setZoomScale(1);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isFullscreen]);
+
+  const openFullscreen = () => {
+    window.history.pushState({ fullscreen: true }, "");
+    setIsFullscreen(true);
+    setZoomScale(1);
+  };
+
+  const closeFullscreen = () => {
+    window.history.back();
+  };
+
   const paginate = (newDirection: number) => {
     setDirection(newDirection);
-    setActiveImageIdx((prev) => {
-      const next = prev + newDirection;
-      if (next < 0) {
-        const currentIndex = variants.findIndex(v => v.id === selectedVariantId);
-        const prevVariant = variants[currentIndex > 0 ? currentIndex - 1 : variants.length - 1];
-        if (prevVariant && prevVariant.id !== selectedVariantId) {
-          setTimeout(() => setSelectedVariantId(prevVariant.id), 0);
-          return (prevVariant.productImages?.length ?? 1) - 1;
-        }
-        return images.length > 0 ? images.length - 1 : 0;
+    
+    const next = activeImageIdx + newDirection;
+    if (next < 0) {
+      const currentIndex = variants.findIndex(v => v.id === selectedVariantId);
+      const prevVariant = variants[currentIndex > 0 ? currentIndex - 1 : variants.length - 1];
+      if (prevVariant && prevVariant.id !== selectedVariantId) {
+        setSelectedVariantId(prevVariant.id);
+        setActiveImageIdx((prevVariant.productImages?.length ?? 1) - 1);
+      } else {
+        setActiveImageIdx(images.length > 0 ? images.length - 1 : 0);
       }
-      if (next >= images.length) {
-        const currentIndex = variants.findIndex(v => v.id === selectedVariantId);
-        const nextVariant = variants[currentIndex < variants.length - 1 ? currentIndex + 1 : 0];
-        if (nextVariant && nextVariant.id !== selectedVariantId) {
-          setTimeout(() => setSelectedVariantId(nextVariant.id), 0);
-          return 0;
-        }
-        return 0;
+    } else if (next >= images.length) {
+      const currentIndex = variants.findIndex(v => v.id === selectedVariantId);
+      const nextVariant = variants[currentIndex < variants.length - 1 ? currentIndex + 1 : 0];
+      if (nextVariant && nextVariant.id !== selectedVariantId) {
+        setSelectedVariantId(nextVariant.id);
+        setActiveImageIdx(0);
+      } else {
+        setActiveImageIdx(0);
       }
-      return next;
-    });
+    } else {
+      setActiveImageIdx(next);
+    }
   };
 
   const selectedVariant = variants.find((v) => v.id === selectedVariantId);
@@ -112,7 +136,7 @@ export function ProductView({ product }: ProductViewProps) {
               <div className="relative w-full aspect-[4/3] md:aspect-[4/3] rounded-2xl bg-muted/20 overflow-hidden group">
                 <AnimatePresence initial={false} custom={direction}>
                   <motion.img
-                    key={activeImageIdx}
+                    key={`${selectedVariantId}-${activeImageIdx}`}
                     src={images[activeImageIdx]}
                     alt={`${product.name} main view`}
                     className="absolute inset-0 w-full h-full object-contain pointer-events-auto cursor-grab active:cursor-grabbing"
@@ -151,10 +175,7 @@ export function ProductView({ product }: ProductViewProps) {
                         paginate(-1);
                       }
                     }}
-                    onClick={() => {
-                      setIsFullscreen(true);
-                      setZoomScale(1);
-                    }}
+                    onClick={openFullscreen}
                   />
                 </AnimatePresence>
 
@@ -163,7 +184,7 @@ export function ProductView({ product }: ProductViewProps) {
                 </div>
                 
                 {/* Arrows */}
-                {images.length > 1 && (
+                {(images.length > 1 || variants.length > 1) && (
                   <>
                     <button
                       onClick={(e) => {
@@ -172,7 +193,7 @@ export function ProductView({ product }: ProductViewProps) {
                       }}
                       className="absolute left-2 top-1/2 -translate-y-1/2 p-2 flex items-center justify-center transition-transform hover:scale-110 z-10"
                     >
-                      <ChevronLeft className="w-8 h-8 text-black drop-shadow-lg" />
+                      <ChevronLeft className="w-8 h-8 md:w-12 md:h-12 text-black drop-shadow-lg" />
                     </button>
                     <button
                       onClick={(e) => {
@@ -181,7 +202,7 @@ export function ProductView({ product }: ProductViewProps) {
                       }}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-2 flex items-center justify-center transition-transform hover:scale-110 z-10"
                     >
-                      <ChevronRight className="w-8 h-8 text-black drop-shadow-lg" />
+                      <ChevronRight className="w-8 h-8 md:w-12 md:h-12 text-black drop-shadow-lg" />
                     </button>
                   </>
                 )}
@@ -487,7 +508,7 @@ export function ProductView({ product }: ProductViewProps) {
               className="absolute top-6 left-6 text-white bg-black/50 p-2 rounded-full hover:bg-black/80 transition-colors border border-white/10 backdrop-blur-md"
               onClick={(e) => {
                 e.stopPropagation();
-                setIsFullscreen(false);
+                closeFullscreen();
               }}
             >
               <ChevronLeft className="w-6 h-6" />
