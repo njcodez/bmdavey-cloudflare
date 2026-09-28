@@ -7,6 +7,15 @@
 		"nodejs_compat",
 		"global_fetch_strictly_public"
 	],
+	"observability": {
+		"enabled": true,
+		"logs": {
+			"enabled": true
+		},
+		"traces": {
+			"enabled": true
+		}
+	},
 	"vars": {
 		"NEXT_PUBLIC_SUPABASE_URL": "https://ksshztzqovhgpyudfefg.supabase.co",
 		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzc2h6dHpxb3ZoZ3B5dWRmZWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1Njc4NjksImV4cCI6MjEwNTE0Mzg2OX0.Pc0ixgk7XDFwQpfKQjrpJvZ6gQeBvf_NzhBUES9qY7Q",
