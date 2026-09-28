@@ -8,6 +8,7 @@ type StorefrontProductsParams = {
   page?: number;
   limit?: number;
   search?: string;
+  brand?: string | string[];
   category?: string | string[];
   targetDemographic?: string | string[];
   frameMaterial?: string | string[];
@@ -27,6 +28,7 @@ export async function getStorefrontProducts({
   page = 1,
   limit = 15,
   search = "",
+  brand,
   category,
   targetDemographic,
   frameMaterial,
@@ -75,6 +77,12 @@ export async function getStorefrontProducts({
     if (!val) return [];
     return Array.isArray(val) ? val : [val];
   };
+
+  const brands = toArray(brand);
+  if (brands.length > 0) {
+    const brandConditions = brands.map(b => ilike(products.brand, b.trim()));
+    conditions.push(or(...brandConditions)!);
+  }
 
   const categories = toArray(category);
   if (categories.length > 0) conditions.push(inArray(products.category, categories));
@@ -218,6 +226,7 @@ export async function getStorefrontProducts({
   // 4. Extract Dynamic Filter Options (based on current search/base conditions)
   const filterData = await db
     .select({
+      brand: products.brand,
       category: products.category,
       targetDemographic: products.target_demographic,
       frameMaterial: products.frame_material,
@@ -231,6 +240,7 @@ export async function getStorefrontProducts({
     .where(searchWhere); // Filter options only by text search, not selected facets
 
   const availableFilters = {
+    brands: Array.from(new Set(filterData.map(d => d.brand).filter((x): x is string => Boolean(x)))),
     categories: Array.from(new Set(filterData.map(d => d.category).filter((x): x is string => Boolean(x)))),
     demographics: Array.from(new Set(filterData.map(d => d.targetDemographic).filter((x): x is string => Boolean(x)))),
     frameMaterials: Array.from(new Set(filterData.map(d => d.frameMaterial).filter((x): x is string => Boolean(x)))),

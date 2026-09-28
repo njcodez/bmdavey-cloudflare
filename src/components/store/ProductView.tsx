@@ -115,7 +115,13 @@ export function ProductView({ product }: ProductViewProps) {
     }
   }
 
-  const getIconName = (title: string) => title.replace(/[^a-zA-Z0-9]/g, '');
+  const getIconName = (title: string) => {
+    const cleaned = title.replace(/[^a-zA-Z0-9]/g, '');
+    if (cleaned.toLowerCase() === 'gear' || cleaned.toLowerCase() === 'gears') {
+      return 'gear';
+    }
+    return cleaned;
+  };
 
   return (
     <div className="container mx-auto px-4 md:px-6 pt-32 pb-16">
@@ -193,7 +199,7 @@ export function ProductView({ product }: ProductViewProps) {
                       }}
                       className="absolute left-2 top-1/2 -translate-y-1/2 p-2 flex items-center justify-center transition-transform hover:scale-110 z-10"
                     >
-                      <ChevronLeft className="w-8 h-8 md:w-12 md:h-12 text-black drop-shadow-lg" />
+                      <ChevronLeft className="w-8 h-8 md:w-12 md:h-12 text-primary drop-shadow-lg" />
                     </button>
                     <button
                       onClick={(e) => {
@@ -202,7 +208,7 @@ export function ProductView({ product }: ProductViewProps) {
                       }}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-2 flex items-center justify-center transition-transform hover:scale-110 z-10"
                     >
-                      <ChevronRight className="w-8 h-8 md:w-12 md:h-12 text-black drop-shadow-lg" />
+                      <ChevronRight className="w-8 h-8 md:w-12 md:h-12 text-primary drop-shadow-lg" />
                     </button>
                   </>
                 )}

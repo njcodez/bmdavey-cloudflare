@@ -5,8 +5,11 @@ import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
 import { SlidersHorizontal } from "lucide-react";
 
+import { BRANDS } from "~/lib/constants/brands";
+
 type DynamicFiltersProps = {
   availableFilters: {
+    brands?: string[];
     categories: string[];
     demographics: string[];
     frameMaterials: string[];
@@ -76,11 +79,16 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
     const params = new URLSearchParams(localParams.toString());
     const currentValues = params.getAll(key);
     
-    // Check if the value is already selected
-    if (currentValues.includes(value)) {
-      // Remove it: we must delete the key completely, then re-append everything else
+    // Check if the value is already selected (case-insensitive for brand)
+    const isBrand = key === "brand";
+    const existingIndex = isBrand 
+      ? currentValues.findIndex((v) => v.toLowerCase() === value.toLowerCase())
+      : currentValues.indexOf(value);
+
+    if (existingIndex !== -1) {
+      // Remove it: delete the key completely, then re-append everything else
       params.delete(key);
-      const remaining = currentValues.filter((v) => v !== value);
+      const remaining = currentValues.filter((_, idx) => idx !== existingIndex);
       remaining.forEach((v) => params.append(key, v));
     } else {
       // Add it
@@ -120,6 +128,7 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
     setIsOpen(false);
   };
 
+  const hasBrands = BRANDS.length > 0;
   const hasCategories = availableFilters.categories.length > 0;
   const hasDemographics = availableFilters.demographics.length > 0;
   const hasFrameMaterials = availableFilters.frameMaterials.length > 0;
@@ -161,6 +170,22 @@ export function DynamicFilters({ availableFilters, children }: DynamicFiltersPro
           >
             <div className="w-full max-h-[70vh] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 border-2 border-black bg-white mt-2 shadow-[6px_6px_0_0_#000]">
               
+              {hasBrands && (
+                <div className="flex flex-col gap-3">
+                  <h4 className="font-bold border-b pb-2">Brand</h4>
+                  {BRANDS.map((brand) => (
+                    <div key={brand} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={`brand-${brand}`}
+                        checked={localParams.getAll("brand").some(b => b.toLowerCase() === brand.toLowerCase())}
+                        onCheckedChange={() => handleFilterChange("brand", brand)}
+                      />
+                      <Label htmlFor={`brand-${brand}`} className="cursor-pointer">{brand}</Label>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {hasCategories && (
                 <div className="flex flex-col gap-3">
                   <h4 className="font-bold border-b pb-2">Category</h4>
