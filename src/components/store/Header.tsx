@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { checkSession, logoutAction } from "~/server/actions/admin-auth";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { BRANDS } from "~/lib/constants/brands";
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
@@ -90,6 +91,31 @@ export function Header() {
             />
           </Link>
           <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center gap-8 text-sm h-full">
+            {/* Brands Dropdown */}
+            <div className="relative group flex items-center h-full">
+              <span className="text-white font-bold hover:text-white/80 transition-colors drop-shadow-md py-4 cursor-pointer">
+                Brands
+              </span>
+              <div className="absolute left-1/2 -translate-x-1/2 top-full pt-1 w-40 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
+                <div className="relative bg-white text-black rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100">
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45 rounded-tl-sm" />
+                  <div className="relative bg-white rounded-xl overflow-hidden flex flex-col z-10">
+                    {BRANDS.map((brand, idx) => (
+                      <Link
+                        key={brand}
+                        href={`/?brand=${encodeURIComponent(brand)}#products-section`}
+                        className={`px-4 py-3 hover:bg-gray-50 font-medium text-sm transition-colors text-center ${
+                          idx > 0 ? "border-t border-gray-50" : ""
+                        }`}
+                      >
+                        {brand}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="relative group flex items-center h-full">
               <Link
                 href="/?category=Kids#products-section"
@@ -186,6 +212,21 @@ export function Header() {
               className="md:hidden overflow-hidden border-t border-white/20 bg-black/50"
             >
               <nav className="flex flex-col items-center gap-4 py-6 text-sm">
+                <div className="flex flex-col items-center gap-1 w-full">
+                  <span className="text-white/60 text-xs font-semibold uppercase tracking-wider">Brands</span>
+                  <div className="flex flex-wrap justify-center gap-2 mt-1 px-4">
+                    {BRANDS.map((brand) => (
+                      <Link
+                        key={brand}
+                        href={`/?brand=${encodeURIComponent(brand)}#products-section`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-white font-medium bg-white/10 px-3 py-1 rounded-full text-xs hover:bg-white/20"
+                      >
+                        {brand}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
                 <Link href="/?category=Kids#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Kids</Link>
                 <Link href="/?targetDemographic=Adults#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Adults</Link>
                 <Link href="/?category=Hybrid#products-section" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-bold">Hybrid</Link>

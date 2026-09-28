@@ -32,6 +32,7 @@ export default async function HomePage({
   const maxPriceParam = getSingleString(resolvedSearchParams.maxPrice);
   const maxPrice = maxPriceParam ? parseInt(maxPriceParam) : undefined;
 
+  const brand = resolvedSearchParams.brand;
   const category = resolvedSearchParams.category;
   const targetDemographic = resolvedSearchParams.targetDemographic;
   const frameMaterial = resolvedSearchParams.frameMaterial;
@@ -57,6 +58,7 @@ export default async function HomePage({
     page,
     limit,
     search,
+    brand,
     category,
     targetDemographic,
     frameMaterial,
