@@ -28,8 +28,8 @@ export default function ContactPage() {
             <div>
               <p className="font-semibold">Phone</p>
 
-              <a href="tel:+919884945605" className="text-primary hover:underline">
-                +91 98849 45605
+              <a href="tel:+919884945065" className="text-primary hover:underline">
+                +91 98849 45065
               </a>
             </div>
           </div>

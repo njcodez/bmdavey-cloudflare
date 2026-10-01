@@ -9,7 +9,7 @@ import { updateProduct } from "~/server/actions/update-product";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BICYCLE_COLORS } from "~/lib/constants/colors";
 import keyFeaturesData from "~/lib/keyFeatures.json";
-import { uploadImageAction } from "~/server/actions/upload-image";
+import { supabase } from "~/lib/supabase";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -173,9 +173,23 @@ export function ProductForm({ initialData }: ProductFormProps) {
   const currentAgeValues = getAgeRangeValues(form.watch("age_range"));
 
   const handleImageUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    return await uploadImageAction(formData);
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+    const filePath = `product-images/${fileName}`;
+
+    const { error } = await supabase.storage
+      .from("images")
+      .upload(filePath, file);
+
+    if (error) {
+      throw new Error(`Image upload failed: ${error.message}`);
+    }
+
+    const { data: publicData } = supabase.storage
+      .from("images")
+      .getPublicUrl(filePath);
+
+    return publicData.publicUrl;
   };
 
   const handleImport = (importedData: Partial<FormValues> & { variants: NonNullable<FormValues["variants"]> }) => {
