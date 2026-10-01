@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Check, ChevronLeft, ChevronRight, ShieldCheck, Timer, Sparkles } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ShieldCheck, Timer, Sparkles, Phone } from "lucide-react";
 import { cn } from "~/lib/utils";
 import Link from "next/link";
 import { ReservePriceModal } from "./ReservePriceModal";
@@ -367,6 +367,15 @@ export function ProductView({ product }: ProductViewProps) {
             <p className="text-xs text-center text-muted-foreground mt-3">
               Lock in this price for 48 hours. No upfront payment required.
             </p>
+            <div className="flex items-center justify-center gap-2 mt-4 text-sm md:text-base font-medium">
+              <Phone className="w-4 h-4 text-[#008FEF] shrink-0" />
+              <span className="font-bold">
+                <a href="tel:+919884945065" className="underline hover:text-primary transition-colors">
+                  Call
+                </a>{" "}
+                for home delivery
+              </span>
+            </div>
             <Link href="/experience-offline" className="text-sm md:text-base font-bold text-primary hover:underline text-center block mt-3 bg-primary/10 py-3 px-4 rounded-xl shadow-sm border border-primary/20">
               Why &quot;reserve now&quot; instead of buying online? Click here to know why!
             </Link>

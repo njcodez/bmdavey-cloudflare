@@ -61,7 +61,7 @@ export default function ExperienceOfflinePage() {
             Lock in your online price by reserving it, then come visit our showroom to experience it firsthand.
           </p>
           <div className="w-full space-y-3 pt-4 flex flex-col">
-            <Link href="/about" className="w-full">
+            <Link href="https://maps.app.goo.gl/CVaqP6zX9bvQ8rq4A" className="w-full">
               <Button size="lg" className="w-full h-12 text-md">
                 Get Directions to Store
               </Button>

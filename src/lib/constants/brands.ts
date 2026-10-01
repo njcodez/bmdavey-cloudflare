@@ -1,8 +1,9 @@
 export const BRANDS = [
   "BSA",
   "Hercules",
-  "Mach City",
-  "Hero",
+  "Hero Cycles",
+  "Bitson",
+  "Tata Stryder"
 ] as const;
 
 export type BrandName = typeof BRANDS[number];

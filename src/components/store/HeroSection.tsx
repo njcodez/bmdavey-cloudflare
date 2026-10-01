@@ -52,7 +52,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mt-3 md:mt-6 text-sm sm:text-xl text-white/65 max-w-xl leading-relaxed"
           >
-            No matter the journey, we travel with you. Secure your price for 48 hours. Pay only when you&apos;re ready to ride.
+            No matter your bicycle choice, we travel with you. Secure your exclusive price for 48 hours. Pay only when you&apos;re ready to ride.
           </motion.p>
 
           <motion.div
