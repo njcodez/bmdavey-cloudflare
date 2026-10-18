@@ -54,3 +54,9 @@ yarn-error.log*
 .wrangler
 .dev.vars*
 !.dev.vars.example
+wrangler.json*
+!wrangler.json*.example
+wrangler.toml*
+!wrangler.toml*.example
+wrangler*.log
+

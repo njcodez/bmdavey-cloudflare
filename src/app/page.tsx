@@ -119,6 +119,84 @@ export default async function HomePage({
             </Suspense>
           </div>
         </div>
+
+        {/* --- SEO RICH CONTENT & LOCAL CHENNAI STORE INFO --- */}
+        <div className="container mx-auto px-4 md:px-6 mt-16 pt-12 border-t border-border/60">
+          <div className="max-w-5xl mx-auto space-y-12">
+            
+            {/* Header intro */}
+            <div className="text-center space-y-3">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground">
+                Your Trusted Cycle Shop in Chennai Since 1932
+              </h2>
+              <p className="text-muted-foreground text-sm sm:text-base max-w-3xl mx-auto leading-relaxed">
+                Welcome to <strong>B. M. Davey & Co.</strong>, one of Chennai’s oldest and most respected bicycle stores. Located on Broadway (Prakasam Salai, Parrys), we offer an unmatched collection of kids bicycles, adult geared cycles, mountain bikes (MTB), hybrid city commuters, and cycling gear for every rider and budget.
+              </p>
+            </div>
+
+            {/* Value Pillars Grid */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="p-6 rounded-2xl border bg-card/60 backdrop-blur-sm shadow-sm space-y-2">
+                <h3 className="text-lg font-bold text-foreground">Kids & Toddler Bicycles</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Find the safest, most durable bicycles for children aged 2 to 12 years. Complete with training wheels, lightweight frames, and vibrant colors from trusted brands like Hero, Hercules, and BSA.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border bg-card/60 backdrop-blur-sm shadow-sm space-y-2">
+                <h3 className="text-lg font-bold text-foreground">Geared & MTB Cycles</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Conquer rough roads or morning workouts with Shimano-equipped multi-gear mountain cycles, front disc brakes, and rugged suspension forks designed for Indian terrains.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border bg-card/60 backdrop-blur-sm shadow-sm space-y-2">
+                <h3 className="text-lg font-bold text-foreground">City Commuters & Hybrids</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Effortless, fast-rolling hybrid bicycles engineered for Chennai’s daily traffic and fitness routines. Comfortable upright seating with puncture-resistant tires.
+                </p>
+              </div>
+            </div>
+
+            {/* Frequently Asked Questions (SEO / Rich Snippet boost) */}
+            <div className="space-y-6 pt-6 border-t border-border/40">
+              <h3 className="text-xl sm:text-2xl font-black text-center text-foreground">
+                Frequently Asked Questions — Cycle Shopping in Chennai
+              </h3>
+              
+              <div className="grid md:grid-cols-2 gap-6 text-left">
+                <div className="p-5 rounded-xl bg-muted/40 border space-y-2">
+                  <h4 className="font-semibold text-foreground text-base">Where is B. M. Davey & Co. cycle shop located in Chennai?</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    Our landmark showroom is located on Broadway (Prakasam Salai) in Parrys, George Town - the historic heart of Chennai&apos;s bicycle hub.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-xl bg-muted/40 border space-y-2">
+                  <h4 className="font-semibold text-foreground text-base">Can I book a bicycle online and test ride it in Chennai?</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    Yes! Browse our collection online, reserve any cycle to lock in your price for 48 hours without paying upfront, and visit our store to test ride and get custom fitting.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-xl bg-muted/40 border space-y-2">
+                  <h4 className="font-semibold text-foreground text-base">Do you sell bicycles for all age groups and budgets?</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    We stock cycles for every budget, from starter toddler bikes to high-performance multi-speed adult bicycles, ladies city cycles, and daily commuter bikes.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-xl bg-muted/40 border space-y-2">
+                  <h4 className="font-semibold text-foreground text-base">Do cycles come fully assembled and tuned?</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                    Unlike standard online orders delivered in a box, every bicycle bought at B. M. Davey & Co. is assembled, brake-aligned, and tuned by veteran mechanics with over 35 years of experience.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </section>
       <Footer />
     </main>

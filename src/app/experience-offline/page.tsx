@@ -3,8 +3,9 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export const metadata = {
-  title: "Experience Offline | B. M. Davey & Co.",
-  description: "Why visiting our store is the best way to buy a bicycle.",
+  title: "Test Ride & Visit Cycle Showroom in Chennai | B. M. Davey & Co.",
+  description: "Experience the joy of test riding bikes before you buy. Visit our Broadway Chennai cycle showroom for expert personalized bicycle sizing, gear tuning, instant warranty, and offline discounts.",
+  keywords: ["test ride cycle chennai", "bicycle fitting chennai", "offline cycle shop chennai", "cycle showroom parrys"],
 };
 
 export default function ExperienceOfflinePage() {

@@ -2,6 +2,13 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Header } from "~/components/store/Header";
 import { Footer } from "~/components/store/Footer";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us | Chennai's Heritage Bicycle Store Since 1932",
+  description: "Learn the story of B. M. Davey & Co., Chennai's premier bicycle shop on Broadway (Prakasam Salai). Serving cyclists across Tamil Nadu for over 90 years with honest guidance, authentic cycles, and unmatched expertise.",
+  keywords: ["about BM Davey", "cycle shop chennai broadway", "bicycle store chennai history", "oldest cycle shop in chennai", "prakasam salai cycles"],
+};
 
 export default function AboutPage() {
   return (

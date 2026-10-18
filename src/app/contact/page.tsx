@@ -2,6 +2,13 @@ import Link from "next/link";
 import { ChevronLeft, Mail, Phone, MapPin } from "lucide-react";
 import { Header } from "~/components/store/Header";
 import { Footer } from "~/components/store/Footer";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact & Visit Showroom | Cycle Shop in Broadway, Chennai",
+  description: "Visit B. M. Davey & Co. bicycle store in Broadway (Prakasam Salai), Parrys, Chennai. Get phone numbers, map directions, showroom timings, and email support for all your cycle inquiries.",
+  keywords: ["cycle shop near me chennai", "BM Davey Chennai contact", "bicycle shop Broadway Chennai address", "cycle showroom Parrys"],
+};
 
 export default function ContactPage() {
   return (

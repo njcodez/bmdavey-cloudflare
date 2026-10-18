@@ -46,17 +46,28 @@ export async function generateMetadata({
     maximumFractionDigits: 0,
   });
 
-  const title = `${product.name} | ${product.brand} | B. M. Davey & Co.`;
-  const description = `Buy ${product.name} by ${product.brand} at ${formattedPrice}. Explore specs, features, colors, and book online at B. M. Davey & Co. Chennai.`;
+  const title = `Buy ${product.name} (${product.brand}) | Best Price Cycle Shop Chennai`;
+  const description = `Buy ${product.name} by ${product.brand} in Chennai at ${formattedPrice}. Specs: ${product.category}, ${product.gears ? `${product.gears} gears,` : ''} ${product.target_demographic}. Reserve online & test ride at B. M. Davey & Co. cycle showroom Chennai.`;
 
   return {
     title,
     description,
+    keywords: [
+      product.name,
+      `${product.brand} cycle chennai`,
+      `${product.category} cycle chennai`,
+      "buy cycle chennai",
+      "cycle shop chennai",
+      "B. M. Davey & Co.",
+    ],
+    alternates: {
+      canonical: `https://bmdavey.in/product/${product.id}`,
+    },
     openGraph: {
       title,
       description,
       type: "website",
-      siteName: "B. M. Davey & Co.",
+      siteName: "B. M. Davey & Co. - Cycle Shop Chennai",
       images: firstImage ? [{ url: firstImage, alt: product.name }] : undefined,
     },
     twitter: {
